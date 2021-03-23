@@ -1,0 +1,47 @@
+server:
+  port: 88
+spring:
+  application:
+    name: fmall-gateway
+  cloud:
+    nacos:
+      server-addr: 127.0.0.1:8848
+    #配置网关
+    gateway:
+      routes:
+        ##商品服务
+        - id: product_route
+          uri: lb://fmall-product
+          predicates:
+          - Path=/api/product/**
+          filters:
+          - RewritePath=/api/(?<segment>/?.*),/$\{segment}
+        #会员服务
+        - id: member_route
+          uri: lb://fmall-member
+          predicates:
+          - Path=/api/member/**
+          filters:
+          - RewritePath=/api/(?<segment>/?.*),/$\{segment}
+        #仓储服务
+        - id: ware_route
+          uri: lb://fmall-ware
+          predicates:
+          - Path=/api/ware/**
+          filters:
+          - RewritePath=/api/(?<segment>/?.*),/$\{segment}
+        ##第三方服务(OOS阿里云对象存储)
+        - id: third_party_route
+          uri: lb://fmall-third-party
+          predicates:
+          - Path=/api/thirdparty/**
+          filters:
+          - RewritePath=/api/thirdparty/(?<segment>/?.*), /$\{segment}
+        ##后台管理服务
+        - id: admin_route
+          uri: lb://renren-fast
+          predicates:
+          - Path=/api/**
+          filters:
+          - RewritePath=/api/(?<segment>/?.*), /renren-fast/$\{segment}
+

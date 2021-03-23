@@ -1,0 +1,9 @@
+spring:
+  application:
+    name: fmall-gateway
+  cloud:
+    nacos:
+      server-addr: 127.0.0.1:8848
+      #配置中心命名空间ID
+      config:
+        namespace: 9aa053a3-696f-41df-a200-c5d2d35c95a9

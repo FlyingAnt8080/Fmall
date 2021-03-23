@@ -14,5 +14,8 @@
         <module>fmall-order</module>
         <module>fmall-product</module>
         <module>fmall-ware</module>
+        <module>renren-fast</module>
+        <module>renren-generator</module>
+        <module>fmall-common</module>
     </modules>
 </project>

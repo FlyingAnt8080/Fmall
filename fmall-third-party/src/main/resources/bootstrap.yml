@@ -1,0 +1,14 @@
+spring:
+  application:
+    name: fmall-third-party
+  cloud:
+    nacos:
+      discovery:
+        server-addr: 127.0.0.1:8848
+      config:
+        namespace: 4b0ea68a-5586-4308-b371-5f79e2fbd16e
+        extension-configs[0]:
+          data-id: oss.yml
+          group: DEFAULT_GROUP
+          refresh: true
+
