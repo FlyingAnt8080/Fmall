@@ -15,7 +15,8 @@
         <module>fmall-product</module>
         <module>fmall-ware</module>
         <module>renren-fast</module>
-        <module>renren-generator</module>
+        <!--<module>renren-generator</module>-->
         <module>fmall-common</module>
+        <module>fmall-auth-server</module>
     </modules>
 </project>

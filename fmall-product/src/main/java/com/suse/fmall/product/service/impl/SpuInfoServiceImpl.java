@@ -135,8 +135,12 @@ public class SpuInfoServiceImpl extends ServiceImpl<SpuInfoDao, SpuInfoEntity> i
         if (!CollectionUtils.isEmpty(skus)){
             skus.forEach(item -> {
                 String defaultImg = "";
+                //TODO 默认图片又问题，有时候添加不上
                 for (Images img : item.getImages()) {
-                    defaultImg = img.getImgUrl();
+                    if(img.getDefaultImg() == 1){
+                        defaultImg = img.getImgUrl();
+                        break;
+                    }
                 }
                 SkuInfoEntity skuInfoEntity = new SkuInfoEntity();
                 //private String skuName;

@@ -3,6 +3,7 @@ package com.suse.fmall.product.service;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.suse.common.utils.PageUtils;
 import com.suse.fmall.product.entity.CategoryEntity;
+import com.suse.fmall.product.vo.Catalog2Vo;
 
 import java.util.List;
 import java.util.Map;
@@ -32,5 +33,12 @@ public interface CategoryService extends IService<CategoryEntity> {
 
     void updateCascade(CategoryEntity category);
 
+    List<CategoryEntity> getLevel1Categories();
+
+    /**
+     * 查出所有的分类
+     * @return
+     */
+    Map<String, List<Catalog2Vo>> getCateLogJson();
 }
 

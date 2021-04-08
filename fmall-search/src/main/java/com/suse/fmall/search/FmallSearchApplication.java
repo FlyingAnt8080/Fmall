@@ -4,8 +4,10 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
 import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
+import org.springframework.cloud.openfeign.EnableFeignClients;
 
 @EnableDiscoveryClient
+@EnableFeignClients
 //排除数据源的配置(common中引入了数据源导致的)
 @SpringBootApplication(exclude = DataSourceAutoConfiguration.class)
 public class FmallSearchApplication {

@@ -13,6 +13,7 @@ import com.suse.fmall.product.vo.AttrVo;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import java.util.Arrays;
 import java.util.List;
@@ -46,7 +47,7 @@ public class AttrServiceImpl extends ServiceImpl<AttrDao, AttrEntity> implements
     public PageUtils queryPage(Map<String, Object> params) {
         IPage<AttrEntity> page = this.page(
                 new Query<AttrEntity>().getPage(params),
-                new QueryWrapper<AttrEntity>()
+                new QueryWrapper<>()
         );
 
         return new PageUtils(page);
@@ -112,6 +113,7 @@ public class AttrServiceImpl extends ServiceImpl<AttrDao, AttrEntity> implements
         return pageUtils;
     }
 
+    @Cacheable(value = "attr",key = "'attrinfo:'+#root.args[0]")
     @Override
     public AttrRespVo getAttrInfo(Long attrId) {
         AttrRespVo respVo = new AttrRespVo();

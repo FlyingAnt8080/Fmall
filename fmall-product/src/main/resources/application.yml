@@ -12,6 +12,24 @@ spring:
   #指定json转换是日期类型格式
   jackson:
     date-format: yyyy-MM-dd HH:mm:ss
+  thymeleaf:
+    cache: false
+  #redis相关配置
+  redis:
+    host: 169.254.122.40
+    port: 6379
+  #配置SpringCache使用Redis做缓存
+  cache:
+    type: redis
+    redis:
+      time-to-live: 3600000
+      #给缓存的每个key加前缀，用于区分redis中其他的key
+      #如果没有指定前缀就用缓存的名字作为前缀
+      #key-prefix: CACHE_
+      #前缀是否应用
+      use-key-prefix: true
+      #是否缓存空值(用于解决缓存穿透问题)
+      cache-null-values: true
 #    配置阿里云对象存储
 #    alicloud:
 #      access-key: LTAI4G9ykMa86eEzQbdsbnmH
@@ -35,3 +53,8 @@ server:
 logging:
   level:
     com.suse.fmall: debug
+fmall:
+  thread:
+    core-size: 20
+    max-size: 200
+    keep-alive-time: 10

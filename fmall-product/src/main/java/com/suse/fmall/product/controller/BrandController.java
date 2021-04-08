@@ -2,11 +2,14 @@ package com.suse.fmall.product.controller;
 
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import com.suse.common.valid.AddGroup;
 import com.suse.common.valid.UpdateGroup;
 import com.suse.common.valid.UpdateStatusGroup;
+import com.suse.fmall.product.vo.BrandVo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
@@ -58,6 +61,22 @@ public class BrandController {
 
         return R.ok().put("brand", brand);
     }
+    /**
+     * 根据品牌ids查询品牌信息
+     */
+    @RequestMapping("/infos")
+    //@RequiresPermissions("product:brand:info")
+    public R infos(@RequestParam("brandIds") List<Long> brandIds){
+        List<BrandEntity> brands = brandService.getBrandsByIds(brandIds);
+        List<BrandVo> brandVos = brands.stream().map(item -> {
+            BrandVo brandVo = new BrandVo();
+            brandVo.setBrandName(item.getName());
+            brandVo.setBrandId(item.getBrandId());
+            return brandVo;
+        }).collect(Collectors.toList());
+        return R.ok().put("brands", brandVos);
+    }
+
 
     /**
      * 保存

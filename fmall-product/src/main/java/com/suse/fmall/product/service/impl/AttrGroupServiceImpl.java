@@ -3,6 +3,8 @@ package com.suse.fmall.product.service.impl;
 import com.suse.fmall.product.entity.AttrEntity;
 import com.suse.fmall.product.service.AttrService;
 import com.suse.fmall.product.vo.AttrGroupWithAttrsVo;
+import com.suse.fmall.product.vo.SkuItemVo;
+import com.suse.fmall.product.vo.SpuItemAttrGroupVo;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -78,5 +80,13 @@ public class AttrGroupServiceImpl extends ServiceImpl<AttrGroupDao, AttrGroupEnt
             return attrsVo;
         }).collect(Collectors.toList());
         return attrVos;
+    }
+
+    @Override
+    public List<SpuItemAttrGroupVo> getAttrGroupWithAttrsBySpuId(Long spuId, Long catalogId) {
+        //1.查出当前spu对应的所有分组信息，以及分组下的所有属性对应的值
+        AttrGroupDao baseMapper = this.getBaseMapper();
+        List<SpuItemAttrGroupVo> vos = baseMapper.getAttrGroupWithAttrsBySpuId(spuId,catalogId);
+        return vos;
     }
 }

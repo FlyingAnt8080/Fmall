@@ -44,4 +44,20 @@ spring:
           - Path=/api/**
           filters:
           - RewritePath=/api/(?<segment>/?.*), /renren-fast/$\{segment}
+        ## Host路由（注：该路由应该放在所有路由之后）
+        - id: fmall_host_route
+          uri: lb://fmall-product
+          predicates:
+          - Host=fmall.com,item.fmall.com
+        ## 以search开头的域名
+        - id: fmall_search_route
+          uri: lb://fmall-search
+          predicates:
+          - Host=search.fmall.com
+        ## 以auth开头的域名
+        - id: fmall_auth_route
+          uri: lb://fmall-auth-server
+          predicates:
+          - Host=auth.fmall.com
+
 

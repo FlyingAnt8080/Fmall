@@ -13,10 +13,12 @@
     <version>0.0.1-SNAPSHOT</version>
     <name>fmall-search</name>
     <description>ElasticSearch检索服务</description>
+
     <properties>
         <java.version>1.8</java.version>
         <!--springboot默认整合的elasticsearch版本是6.8.5要修改成我们自己的版本7.4.2-->
         <elasticsearch.version>7.4.2</elasticsearch.version>
+        <spring-cloud.version>Hoxton.SR1</spring-cloud.version>
     </properties>
     <dependencies>
         <dependency>
@@ -40,7 +42,33 @@
             <artifactId>elasticsearch-rest-high-level-client</artifactId>
             <version>7.4.2</version>
         </dependency>
+        <!--模板引擎 thymeleaf-->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-thymeleaf</artifactId>
+        </dependency>
+        <!--热部署-->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-devtools</artifactId>
+            <optional>true</optional>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.cloud</groupId>
+            <artifactId>spring-cloud-starter-openfeign</artifactId>
+        </dependency>
     </dependencies>
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>org.springframework.cloud</groupId>
+                <artifactId>spring-cloud-dependencies</artifactId>
+                <version>${spring-cloud.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
     <build>
         <plugins>
             <plugin>

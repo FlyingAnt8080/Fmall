@@ -3,9 +3,11 @@ package com.suse.fmall.product.service;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.suse.common.utils.PageUtils;
 import com.suse.fmall.product.entity.SkuInfoEntity;
+import com.suse.fmall.product.vo.SkuItemVo;
 
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ExecutionException;
 
 /**
  * sku信息
@@ -24,5 +26,11 @@ public interface SkuInfoService extends IService<SkuInfoEntity> {
 
     List<SkuInfoEntity> getSkusBySpuId(Long spuId);
 
+    /**
+     * 根据sku查询商品详情
+     * @param skuId
+     * @return
+     */
+    SkuItemVo getItemBySku(Long skuId) throws ExecutionException, InterruptedException;
 }
 

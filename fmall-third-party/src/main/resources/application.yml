@@ -4,8 +4,8 @@ spring:
   cloud:
     #配置阿里云对象存储
     alicloud:
-      access-key: LTAI4G9ykMa86eEzQbdsbnmH
-      secret-key: VsxXBZJ2YYmk740kpsEd2VLGsRpJcZ
+      access-key: xxx
+      secret-key: xxx
       oss:
         endpoint: oss-cn-beijing.aliyuncs.com
         bucket: fmall8080
