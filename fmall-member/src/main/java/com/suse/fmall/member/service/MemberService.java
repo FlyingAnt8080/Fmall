@@ -3,6 +3,11 @@ package com.suse.fmall.member.service;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.suse.common.utils.PageUtils;
 import com.suse.fmall.member.entity.MemberEntity;
+import com.suse.fmall.member.exception.PhoneExistException;
+import com.suse.fmall.member.exception.UsernameExistException;
+import com.suse.fmall.member.vo.MemberLoginVo;
+import com.suse.fmall.member.vo.MemberRegisterVo;
+import com.suse.fmall.member.vo.SocialUser;
 
 import java.util.Map;
 
@@ -16,5 +21,20 @@ import java.util.Map;
 public interface MemberService extends IService<MemberEntity> {
 
     PageUtils queryPage(Map<String, Object> params);
+
+    /**
+     * 注册
+     * @param vo
+     */
+    void register(MemberRegisterVo vo);
+
+    void checkPhoneUnique(String phone) throws PhoneExistException;
+
+    void checkUsernameUnique(String username) throws UsernameExistException;
+
+    MemberEntity login(MemberLoginVo loginVo);
+
+    MemberEntity login(SocialUser socialUser);
+
 }
 

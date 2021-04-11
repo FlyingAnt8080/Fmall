@@ -59,5 +59,10 @@ spring:
           uri: lb://fmall-auth-server
           predicates:
           - Host=auth.fmall.com
+        ## 以auth开头的域名
+        - id: fmall_cart_route
+          uri: lb://fmall-cart
+          predicates:
+          - Host=cart.fmall.com
 
 

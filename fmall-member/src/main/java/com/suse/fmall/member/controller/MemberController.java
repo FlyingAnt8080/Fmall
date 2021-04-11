@@ -3,13 +3,15 @@ package com.suse.fmall.member.controller;
 import java.util.Arrays;
 import java.util.Map;
 
+import com.suse.common.exception.BizCodeEnume;
+import com.suse.fmall.member.exception.PhoneExistException;
+import com.suse.fmall.member.exception.UsernameExistException;
 import com.suse.fmall.member.feign.CouponFeignService;
+import com.suse.fmall.member.vo.MemberLoginVo;
+import com.suse.fmall.member.vo.MemberRegisterVo;
+import com.suse.fmall.member.vo.SocialUser;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import com.suse.fmall.member.entity.MemberEntity;
 import com.suse.fmall.member.service.MemberService;
@@ -40,6 +42,55 @@ public class MemberController {
         memberEntity.setNickname("小冲");
         R result = couponFeignService.memberCoupons();
         return R.ok().put("member",memberEntity).put("coupons",result.get("coupons"));
+    }
+
+    /**
+     * 注册
+     * @param vo
+     * @return
+     */
+    @PostMapping("/register")
+    public R register(@RequestBody MemberRegisterVo vo){
+        try{
+            memberService.register(vo);
+        }catch (UsernameExistException e){
+            return R.error(BizCodeEnume.USER_EXIST_EXCEPTION.getCode(),BizCodeEnume.USER_EXIST_EXCEPTION.getMsg());
+        }catch (PhoneExistException e){
+            return R.error(BizCodeEnume.PHONE_EXIST_EXCEPTION.getCode(),BizCodeEnume.PHONE_EXIST_EXCEPTION.getMsg());
+        }
+        return R.ok();
+    }
+
+    /**
+     * 登录
+     * @param loginVo
+     * @return
+     */
+    @PostMapping("/login")
+    public R login(@RequestBody MemberLoginVo loginVo){
+       MemberEntity member =  memberService.login(loginVo);
+       if (member != null){
+           return R.ok().setData(member);
+       }else {
+           return R.error(BizCodeEnume.LOGINACCT_PASSWORD_INVALID__EXCEPTION.getCode(),
+                   BizCodeEnume.LOGINACCT_PASSWORD_INVALID__EXCEPTION.getMsg());
+       }
+    }
+
+    /**
+     * 社交登录
+     * @param socialUser
+     * @return
+     */
+    @PostMapping("/oauth2/login")
+    public R oauthLogin(@RequestBody SocialUser socialUser){
+        MemberEntity member =  memberService.login(socialUser);
+        if (member != null){
+            return R.ok().setData(member);
+        }else {
+            return R.error(BizCodeEnume.LOGINACCT_PASSWORD_INVALID__EXCEPTION.getCode(),
+                    BizCodeEnume.LOGINACCT_PASSWORD_INVALID__EXCEPTION.getMsg());
+        }
     }
 
     /**

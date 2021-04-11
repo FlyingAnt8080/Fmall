@@ -14,9 +14,15 @@
         <module>fmall-order</module>
         <module>fmall-product</module>
         <module>fmall-ware</module>
-        <module>renren-fast</module>
-        <!--<module>renren-generator</module>-->
+        <module>fmall-admin</module>
+        <module>fmall-cart</module>
         <module>fmall-common</module>
         <module>fmall-auth-server</module>
+        <module>fmall-search</module>
+        <module>fmall-gateway</module>
+        <module>fmall-third-party</module>
+        <module>fmall-test-sso-client1</module>
+        <module>fmall-test-sso-client2</module>
+        <module>fmall-test-sso-server</module>
     </modules>
 </project>

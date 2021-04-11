@@ -55,6 +55,12 @@
             <artifactId>spring-cloud-starter-alicloud-oss</artifactId>
             <version>2.2.0.RELEASE</version>
         </dependency>
+        <!--用于自定义配置有提示-->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-configuration-processor</artifactId>
+            <optional>true</optional>
+        </dependency>
     </dependencies>
     <dependencyManagement>
         <dependencies>

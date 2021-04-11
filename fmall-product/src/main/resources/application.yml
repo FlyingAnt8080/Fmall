@@ -18,6 +18,9 @@ spring:
   redis:
     host: 169.254.122.40
     port: 6379
+  #springsession将session存储到redis
+  session:
+    store-type: redis
   #配置SpringCache使用Redis做缓存
   cache:
     type: redis
@@ -30,6 +33,7 @@ spring:
       use-key-prefix: true
       #是否缓存空值(用于解决缓存穿透问题)
       cache-null-values: true
+
 #    配置阿里云对象存储
 #    alicloud:
 #      access-key: LTAI4G9ykMa86eEzQbdsbnmH
@@ -53,6 +57,7 @@ server:
 logging:
   level:
     com.suse.fmall: debug
+# 线程池相关配置
 fmall:
   thread:
     core-size: 20
