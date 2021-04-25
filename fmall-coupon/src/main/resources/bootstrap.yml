@@ -7,20 +7,20 @@ spring:
         server-addr: 127.0.0.1:8848
         #一个微服务对应一个命名空间，不同的环境对应不同的分组(dev、test、prod)
         #配置命名空间：命名空间的id号
-        namespace: 25646c97-1bba-40a9-a00d-5e45b7dc3e9e
+        #namespace: 25646c97-1bba-40a9-a00d-5e45b7dc3e9e
         #配置分组
-        group: prod
-        extension-configs[0]:
-          data-id: datasource.yml
-          group: dev
-          refresh: true # 配置修改后是否自动更新
-        extension-configs[1]:
-          data-id: mybatis.yml
-          group: dev
-          refresh: true
-        extension-configs[2]:
-          data-id: other.yml
-          group: dev
-          refresh: true
+        #group: prod
+        #extension-configs[0]:
+#          data-id: datasource.yml
+#          group: dev
+#          refresh: true # 配置修改后是否自动更新
+#        extension-configs[1]:
+#          data-id: mybatis.yml
+#          group: dev
+#          refresh: true
+#        extension-configs[2]:
+#          data-id: other.yml
+#          group: dev
+#          refresh: true
 
 

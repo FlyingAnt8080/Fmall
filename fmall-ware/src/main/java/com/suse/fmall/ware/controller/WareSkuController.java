@@ -3,11 +3,12 @@ package com.suse.fmall.ware.controller;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
-
+import com.suse.common.exception.BizCodeEnume;
+import com.suse.common.exception.NoStockException;
 import com.suse.fmall.ware.vo.SkuHasStockVo;
+import com.suse.fmall.ware.vo.WareSkuLockVo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
-
 import com.suse.fmall.ware.entity.WareSkuEntity;
 import com.suse.fmall.ware.service.WareSkuService;
 import com.suse.common.utils.PageUtils;
@@ -33,6 +34,16 @@ public class WareSkuController {
     public R getSkusStock(@RequestBody List<Long> skuIds){
        List<SkuHasStockVo> vos =  wareSkuService.getSkuHasStock(skuIds);
        return R.ok().setData(vos);
+    }
+
+    @PostMapping("/lock/order")
+    public R orderLockStock(@RequestBody WareSkuLockVo lockVo){
+        try{
+           wareSkuService.orderLockStock(lockVo);
+            return R.ok();
+        }catch (NoStockException e){
+            return R.error(BizCodeEnume.NO_STOCK_EXCEPTION.getCode(),BizCodeEnume.NO_STOCK_EXCEPTION.getMsg());
+        }
     }
 
     /**

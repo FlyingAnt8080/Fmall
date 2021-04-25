@@ -2,6 +2,7 @@ package com.suse.fmall.product.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.suse.common.utils.PageUtils;
+import com.suse.fmall.product.entity.SkuInfoEntity;
 import com.suse.fmall.product.entity.SpuInfoDescEntity;
 import com.suse.fmall.product.entity.SpuInfoEntity;
 import com.suse.fmall.product.vo.SpuSaveVo;
@@ -30,5 +31,12 @@ public interface SpuInfoService extends IService<SpuInfoEntity> {
      * @param spuId
      */
     void supUp(Long spuId);
+
+    /**
+     *
+     * @param skuId
+     * @return
+     */
+    SpuInfoEntity getSpuInfoBySkuId(Long skuId);
 }
 

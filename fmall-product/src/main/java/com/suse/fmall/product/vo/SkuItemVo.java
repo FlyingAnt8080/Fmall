@@ -23,6 +23,8 @@ public class SkuItemVo {
     private SpuInfoDescEntity desc;
     //5.获取spu的规格参数信息
     private List<SpuItemAttrGroupVo> groupAttrs;
+    //6.当前商品秒杀优惠信息
+    private SeckillInfoVo seckillInfo;
     private boolean hasStock = true;
 
 }

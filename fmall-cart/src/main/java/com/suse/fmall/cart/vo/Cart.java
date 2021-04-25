@@ -51,8 +51,10 @@ public class Cart {
         BigDecimal amount = new BigDecimal("0");
         if (!CollectionUtils.isEmpty(items)){
             for (CartItem item : items) {
-                BigDecimal totalPrice = item.getTotalPrice();
-                amount = amount.add(totalPrice);
+                if (item.getCheck()){
+                    BigDecimal totalPrice = item.getTotalPrice();
+                    amount = amount.add(totalPrice);
+                }
             }
         }
         //2.减去优惠总价

@@ -10,6 +10,7 @@
     <packaging>pom</packaging>
     <modules>
         <module>fmall-coupon</module>
+        <module>fmall-seckill</module>
         <module>fmall-member</module>
         <module>fmall-order</module>
         <module>fmall-product</module>
@@ -21,8 +22,8 @@
         <module>fmall-search</module>
         <module>fmall-gateway</module>
         <module>fmall-third-party</module>
-        <module>fmall-test-sso-client1</module>
+        <!--<module>fmall-test-sso-client1</module>
         <module>fmall-test-sso-client2</module>
-        <module>fmall-test-sso-server</module>
+        <module>fmall-test-sso-server</module>-->
     </modules>
 </project>

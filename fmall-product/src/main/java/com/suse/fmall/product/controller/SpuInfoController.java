@@ -3,6 +3,7 @@ package com.suse.fmall.product.controller;
 import java.util.Arrays;
 import java.util.Map;
 
+import com.suse.fmall.product.entity.SkuInfoEntity;
 import com.suse.fmall.product.vo.SpuSaveVo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -36,6 +37,17 @@ public class SpuInfoController {
     public R spuUp(@PathVariable("spuId") Long spuId){
         spuInfoService.supUp(spuId);
         return R.ok();
+    }
+
+    /**
+     * 根据skuId查询SpuInfo
+     * @param skuId
+     * @return
+     */
+    @GetMapping("/spuinfo/{skuId}")
+    public R getSpuInfoBySkuId(@PathVariable("skuId") Long skuId){
+        SpuInfoEntity entity = spuInfoService.getSpuInfoBySkuId(skuId);
+        return R.ok().setData(entity);
     }
 
     /**

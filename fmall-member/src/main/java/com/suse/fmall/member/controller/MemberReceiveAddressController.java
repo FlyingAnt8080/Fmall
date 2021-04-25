@@ -1,15 +1,11 @@
 package com.suse.fmall.member.controller;
 
 import java.util.Arrays;
+import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
-
+import org.springframework.web.bind.annotation.*;
 import com.suse.fmall.member.entity.MemberReceiveAddressEntity;
 import com.suse.fmall.member.service.MemberReceiveAddressService;
 import com.suse.common.utils.PageUtils;
@@ -30,6 +26,10 @@ public class MemberReceiveAddressController {
     @Autowired
     private MemberReceiveAddressService memberReceiveAddressService;
 
+    @GetMapping("/addresses/{memberId}")
+    public List<MemberReceiveAddressEntity> getAddress(@PathVariable("memberId") Long memberId){
+        return  memberReceiveAddressService.getAddresses(memberId);
+    }
     /**
      * 列表
      */
@@ -49,7 +49,6 @@ public class MemberReceiveAddressController {
     //@RequiresPermissions("member:memberreceiveaddress:info")
     public R info(@PathVariable("id") Long id){
 		MemberReceiveAddressEntity memberReceiveAddress = memberReceiveAddressService.getById(id);
-
         return R.ok().put("memberReceiveAddress", memberReceiveAddress);
     }
 

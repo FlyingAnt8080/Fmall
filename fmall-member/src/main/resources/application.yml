@@ -8,10 +8,17 @@ spring:
     password: root
     url: jdbc:mysql://169.254.122.40:3306/fmall_ums?useUnicode=true&characterEncoding=UTF-8&useSSL=false&serverTimezone=Asia/Shanghai
     driver-class-name: com.mysql.jdbc.Driver
+  redis:
+    host: fmall.com
   cloud:
     nacos:
       discovery:
         server-addr: 127.0.0.1:8848
+  thymeleaf:
+    cache: false
+  session:
+    store-type: redis
+
 
 #配置mapper文件的位置
 mybatis-plus:

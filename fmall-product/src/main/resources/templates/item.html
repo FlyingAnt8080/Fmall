@@ -61,12 +61,12 @@
             <ul class="header_ul_right">
 
 
-                <li style="border: 0;">
+                <li style="width:100px;">
                     <a th:if="${session.loginUser != null}" class="aa" style="width: 100px">欢迎：[[${session.loginUser.nickname}]]</a>
                     <a th:if="${session.loginUser == null}" href="http://auth.fmall.com/login.html"
                        class="aa">你好，请登录</a>
                 </li>
-                <li><a href="http://auth.fmall.com/reg.html" th:if="${session.loginUser == null}" style="color: red;">免费注册</a>
+                <li th:if="${session.loginUser == null}"><a href="http://auth.fmall.com/reg.html"  style="color: red;">免费注册</a>
                     |
                 </li>
                 <li><a href="/static/item/javascript:;" class="aa">我的订单</a> |</li>
@@ -477,13 +477,13 @@
                 <div class="boxx-one">
                     <ul>
                         <li>
-									<span>
-										<img src="/static/item/img/b769782fe4ecca40913ad375a71cb92d.png" alt=""/>关注
-									</span>
                             <span>
-										<img src="/static/item/img/9224fcea62bfff479a6712ba3a6b47cc.png" alt=""/>
-										对比
-									</span>
+                                <img src="/static/item/img/b769782fe4ecca40913ad375a71cb92d.png" alt=""/>关注
+                            </span>
+                            <span>
+                                <img src="/static/item/img/9224fcea62bfff479a6712ba3a6b47cc.png" alt=""/>
+                                对比
+                            </span>
                         </li>
                         <li>
 
@@ -523,10 +523,15 @@
                         <li>京东价</li>
                         <li>
                             <span>￥</span>
-                            <span th:text="${#numbers.formatDecimal(item.skuInfo.price,3,2)}">4499.00</span>
+                            <span th:text="${#numbers.formatDecimal(item.skuInfo.price,1,2)}">4499.00</span>
                         </li>
-                        <li>
-                            预约享资格
+                        <li style="color: red" th:if="${item.seckillInfo!=null}">
+                            <span th:if="${#dates.createNow().getTime() < item.seckillInfo.startTime}">
+                                商品将在[[${#dates.format(new java.util.Date(item.seckillInfo.startTime),"yyyy-MM-dd HH:mm:ss")}]]进行秒杀
+                            </span>
+                            <span th:if="${#dates.createNow().getTime() >= item.seckillInfo.startTime && #dates.createNow().getTime() <= item.seckillInfo.endTime}">
+                                秒杀价：[[${#numbers.formatDecimal(item.seckillInfo.seckillPrice,1,2)}]]
+                            </span>
                         </li>
                         <li>
                             <a href="/static/item/">
@@ -645,7 +650,12 @@
 
                         </div>
                     </div>
-                    <div class="box-btns-two">
+                    <div class="box-btns-two" th:if="${item.seckillInfo != null && (#dates.createNow().getTime() >= item.seckillInfo.startTime && #dates.createNow().getTime() <= item.seckillInfo.endTime)}">
+                        <a href="#" id="sekillA" th:attr="skuId=${item.skuInfo.skuId},sessionId=${item.seckillInfo.promotionSessionId},code =${item.seckillInfo.randomCode}">
+                           立即抢购
+                        </a>
+                    </div>
+                    <div class="box-btns-two" th:if="${item.seckillInfo == null || (#dates.createNow().getTime() < item.seckillInfo.startTime || #dates.createNow().getTime() > item.seckillInfo.endTime)}">
                         <a href="#" id="addToCartA" th:attr="skuId=${item.skuInfo.skuId}">
                             加入购物车
                         </a>
@@ -1567,8 +1577,20 @@
     });
     $("#addToCartA").click(function () {
         var num = $("#numInput").val();
-        var  skuId = $(this).attr("skuId");
-        location.href = " http://cart.fmall.com/addToCart?skuId=" + skuId + "&num=" + num;
+        var skuId = $(this).attr("skuId");
+        location.href = "http://cart.fmall.com/addToCart?skuId=" + skuId + "&num=" + num;
+        return false;
+    });
+    $("#sekillA").click(function () {
+        var isLogin = [[${  session.loginUser != null}]];
+        if(isLogin){
+            var num = $("#numInput").val();
+            var killId = $(this).attr("sessionId") + "_" + $(this).attr("skuId");
+            var  key = $(this).attr("code");
+            location.href = "http://seckill.fmall.com/kill?killId="+killId+"&key="+key+"&num="+num;
+        }else {
+            alert("请先登录!");
+        }
         return false;
     });
 </script>

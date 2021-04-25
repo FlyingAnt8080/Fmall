@@ -1,14 +1,11 @@
 package com.suse.fmall.product.controller;
 
+import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import com.suse.fmall.product.entity.SkuInfoEntity;
 import com.suse.fmall.product.service.SkuInfoService;
@@ -31,6 +28,16 @@ public class SkuInfoController {
     private SkuInfoService skuInfoService;
 
     /**
+     * 根据skuId查询商品价格
+     * @param skuId
+     * @return
+     */
+    @GetMapping("/getPrice/{skuId}")
+    public BigDecimal getPrice(@PathVariable("skuId") Long skuId){
+        SkuInfoEntity skuInfoEntity = skuInfoService.getById(skuId);
+        return skuInfoEntity.getPrice();
+    }
+    /**
      * 列表
      */
     @RequestMapping("/list")
@@ -48,7 +55,6 @@ public class SkuInfoController {
     //@RequiresPermissions("product:skuinfo:info")
     public R info(@PathVariable("skuId") Long skuId){
 		SkuInfoEntity skuInfo = skuInfoService.getById(skuId);
-
         return R.ok().put("skuInfo", skuInfo);
     }
 

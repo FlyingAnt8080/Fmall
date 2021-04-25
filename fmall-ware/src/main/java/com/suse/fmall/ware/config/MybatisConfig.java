@@ -6,13 +6,12 @@ import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
-/**
+/*
  * @Author LiuJing
  * @Date: 2021/03/14/ 12:34
  * @Description
  */
 @Configuration
-@EnableDiscoveryClient
 @MapperScan(basePackages = "com.suse.fmall.ware.dao")
 public class MybatisConfig {
     //引入分页插件
@@ -25,4 +24,14 @@ public class MybatisConfig {
         paginationInterceptor.setLimit(500);
         return new PaginationInterceptor();
     }
+
+    //seata配置代理数据源
+    /*@Bean
+    public DataSource dataSource(DataSourceProperties dataSourceProperties){
+        HikariDataSource dataSource = dataSourceProperties.initializeDataSourceBuilder().type(HikariDataSource.class).build();
+        if (StringUtils.hasText(dataSourceProperties.getName())) {
+            dataSource.setPoolName(dataSourceProperties.getName());
+        }
+        return new DataSourceProxy(dataSource);
+    }*/
 }

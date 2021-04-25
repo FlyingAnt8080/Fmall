@@ -1,9 +1,12 @@
 package com.suse.fmall.ware.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.suse.common.to.OrderTo;
+import com.suse.common.to.mq.StockLockedTo;
 import com.suse.common.utils.PageUtils;
 import com.suse.fmall.ware.entity.WareSkuEntity;
 import com.suse.fmall.ware.vo.SkuHasStockVo;
+import com.suse.fmall.ware.vo.WareSkuLockVo;
 
 import java.util.List;
 import java.util.Map;
@@ -23,5 +26,15 @@ public interface WareSkuService extends IService<WareSkuEntity> {
 
     List<SkuHasStockVo> getSkuHasStock(List<Long> skuIds);
 
+    /**
+     * 锁库存
+     * @param lockVo
+     * @return
+     */
+    Boolean orderLockStock(WareSkuLockVo lockVo);
+
+    void unlockStock(StockLockedTo lockedTo);
+
+    void unlockStock(OrderTo orderTo);
 }
 

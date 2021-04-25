@@ -1,9 +1,36 @@
 spring:
+  application:
+    name: fmall-order
+  #数据相关配置
   datasource:
     username: root
     password: root
     url: jdbc:mysql://169.254.122.40:3306/fmall_oms?useUnicode=true&characterEncoding=UTF-8&useSSL=false&serverTimezone=Asia/Shanghai
     driver-class-name: com.mysql.jdbc.Driver
+  #redis相关配置
+  redis:
+    host: fmall.com
+    port: 6379
+  #配置注册中心
+  cloud:
+    nacos:
+      discovery:
+        server-addr: 127.0.0.1:8848
+  #关闭thymeleaf缓存
+  thymeleaf:
+    cache: false
+  #springsession采用redis存储
+  session:
+    store-type: redis
+  #日期格式化类型
+  mvc:
+    date-format: yyyy-MM-dd HH:mm:ss
+# 线程池相关配置
+fmall:
+  thread:
+    core-size: 20
+    max-size: 200
+    keep-alive-time: 10
 #配置mapper文件的位置
 mybatis-plus:
   mapper-locations: classpath:/mapper/**/*.xml
@@ -13,3 +40,7 @@ mybatis-plus:
       id-type: auto
 server:
   port: 9000
+
+#支付宝支付相关配置
+alipay:
+  app-id: 2016101900720622

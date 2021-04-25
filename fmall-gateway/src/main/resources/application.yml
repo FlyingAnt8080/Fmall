@@ -5,7 +5,8 @@ spring:
     name: fmall-gateway
   cloud:
     nacos:
-      server-addr: 127.0.0.1:8848
+      discovery:
+        server-addr: 127.0.0.1:8848
     #配置网关
     gateway:
       routes:
@@ -14,6 +15,13 @@ spring:
           uri: lb://fmall-product
           predicates:
           - Path=/api/product/**
+          filters:
+          - RewritePath=/api/(?<segment>/?.*),/$\{segment}
+        ##优惠服务
+        - id: coupon_route
+          uri: lb://fmall-coupon
+          predicates:
+          - Path=/api/coupon/**
           filters:
           - RewritePath=/api/(?<segment>/?.*),/$\{segment}
         #会员服务
@@ -59,10 +67,25 @@ spring:
           uri: lb://fmall-auth-server
           predicates:
           - Host=auth.fmall.com
-        ## 以auth开头的域名
+        ## 以cart开头的域名
         - id: fmall_cart_route
           uri: lb://fmall-cart
           predicates:
           - Host=cart.fmall.com
+        ## 以order开头的域名
+        - id: fmall_order_route
+          uri: lb://fmall-order
+          predicates:
+          - Host=order.fmall.com
+        ## 以member开头的域名
+        - id: fmall_member_route
+          uri: lb://fmall-member
+          predicates:
+          - Host=member.fmall.com
+        ## 以seckill开头的域名
+        - id: fmall-seckill_route
+          uri: lb://fmall-seckill
+          predicates:
+          - Host=seckill.fmall.com
 
 

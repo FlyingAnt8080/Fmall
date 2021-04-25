@@ -1,10 +1,13 @@
 package com.suse.fmall.order.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.suse.common.to.mq.SeckillOrderTo;
 import com.suse.common.utils.PageUtils;
 import com.suse.fmall.order.entity.OrderEntity;
+import com.suse.fmall.order.vo.*;
 
 import java.util.Map;
+import java.util.concurrent.ExecutionException;
 
 /**
  * 订单
@@ -16,5 +19,53 @@ import java.util.Map;
 public interface OrderService extends IService<OrderEntity> {
 
     PageUtils queryPage(Map<String, Object> params);
+
+    /**
+     * 订单确认页返回需要的数据
+     * @return
+     */
+    OrderConfirmVo confirmOrder() throws ExecutionException, InterruptedException;
+
+    /**
+     * 下单
+     * @param orderSubmitVo
+     * @return
+     */
+    SubmitOrderResponseVo submitOrder(OrderSubmitVo orderSubmitVo);
+
+    /**
+     * 根据订单号查询订单
+     * @param orderSn
+     * @return
+     */
+    OrderEntity getOrderByOrderSn(String orderSn);
+
+    /**
+     * 关闭订单
+     * @param orderEntity
+     */
+    void closeOrder(OrderEntity orderEntity);
+
+    /**
+     * 获取当前订单的支付信息
+     * @param orderSn
+     * @return
+     */
+    PayVo getOrderPay(String orderSn);
+
+    PageUtils queryPageWithItem(Map<String, Object> params);
+
+    /**
+     * 支付宝支付成功
+     * @param payVo
+     * @return
+     */
+    String handlePayResult(PayAsyncVo payVo);
+
+    /**
+     * 创建秒杀订单
+     * @param seckillOrder
+     */
+    void createSeckillOrder(SeckillOrderTo seckillOrder);
 }
 

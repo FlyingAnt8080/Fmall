@@ -1,0 +1,8 @@
+spring:
+  application:
+    name: fmall-search
+  cloud:
+    nacos:
+      config:
+#        namespace: f075d6af-c4bb-4530-b0ec-e9d6ea53e3f9
+        server-addr: 127.0.0.1:8848
