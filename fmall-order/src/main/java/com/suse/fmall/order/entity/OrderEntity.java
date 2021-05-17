@@ -189,6 +189,7 @@ public class OrderEntity implements Serializable {
 	/**
 	 * 修改时间
 	 */
+
 	private Date modifyTime;
 
 	@TableField(exist = false)

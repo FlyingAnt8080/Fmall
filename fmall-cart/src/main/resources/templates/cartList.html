@@ -28,9 +28,9 @@
                 <li>
                     <a th:if="${session.loginUser == null}" href="http://auth.fmall.com/reg.html">免费注册</a>
                 </li>
-                <li class="spacer"></li>
+                <!--<li class="spacer"></li>
                 <li><a href="">我的订单</a></li>
-                <li class="spacer"></li>
+                <li class="spacer"></li>-->
             </ul>
             <div style="clear: both;"></div>
         </div>
@@ -65,7 +65,7 @@
         </div>
         <div class="One_ShopTop">
             <ul>
-                <li><input type="checkbox" class="allCheck">全选</li>
+                <li>选中<!--<input type="checkbox" class="allCheck">全选--></li>
                 <li>商品</li>
                 <li>单价</li>
                 <li>数量</li>
@@ -114,15 +114,12 @@
         <div class="One_ShopFootBuy fix1">
             <div>
                 <ul>
-                    <li><input type="checkbox" class="allCheck"><span>全选</span></li>
-                    <li>删除选中的商品</li>
-                    <li>移到我的关注</li>
-                    <li>清除下柜商品</li>
+                    <!--<li><input type="checkbox" class="allCheck"><span>全选</span></li>
+                    <li>删除选中的商品</li>-->
                 </ul>
             </div>
             <div>
                 <font style="color:#e64346;font-weight:bold;" class="sumNum"> </font>&nbsp;
-
                 <ul>
                     <li><img src="img/buyNumleft.png" alt=""></li>
                     <li><img src="img/buyNumright.png" alt=""></li>
@@ -205,6 +202,11 @@
 <script src="/static/cart/js/index.js" charset="utf-8"></script>
 <script type="text/javascript">
     function toTrade() {
+
+        if ([[${cart.totalAmount}]] == 0){
+            alert("请选择商品！");
+            return;
+        }
         window.location.href = "http://order.fmall.com/toTrade";
     }
 
@@ -473,18 +475,7 @@
         $(".One_DengLu").show();
     })
     //移到我的关注
-    $(".One_ShopFootBuy>div:first-child ul li:nth-child(3)").click(function () {
-        $(".check").each(function (index) {
-            if ($(this).is(":checked") == false) {
-                $(".One_mb").show();
-                $(".One_moveGzIfNull").show();
-            } else {
-                $(".One_mb").show();
-                $(".One_moveMyGz").show();
-                $(".One_moveGzIfNull").hide();
-            }
-        })
-    })
+
     //点击×号关闭
     $(".One_moveGzIfNull>p span:last-child img").click(function () {
         $(".One_mb").hide();
@@ -541,8 +532,8 @@
     $(".One_ShopCon ul li>div:nth-child(2) ol>li:nth-child(4) p:first-child span:first-child").click(function () {
         var jian = $(this).next("span").html();
         jian--;
-        if (jian <= 0) {
-            jian = 0;
+        if (jian <= 1) {
+            jian = 1;
         }
         $(this).next("span").html(jian);
         //总价
@@ -595,30 +586,7 @@
         $(".One_isDel").show();
         var that = $(this);
         //确定删除
-        /*        $(".One_isDel>div:last-child button:first-child").click(function(){
-                    $(".One_mb").hide();
-                    $(".One_isDel").hide();
-                    that.parent().parent().parent().parent().remove();
-                    // 移除结账固定定位
-                    // if($(".check").length==1){
-                    // 	$(".fix").remove();
-                    // }
-                    if($(".fix").offset().top>$(".fix1").offset().top){
-                        $(".fix").hide();
-                    }
-                    if($(".check").length==0){
-                        $(".allCheck").prop("checked",false);
-                        $(".sumNum").html("0");
-                        $(".fnt").html("￥ 0.00");
-                    }
-                })*/
     })
-    /*    //页面滚动删除去结算固定定位隐藏
-        $(document).scroll(function(){
-            if($(".fix").offset().top>$(".fix1").offset().top){
-                $(".fix").hide();
-            }
-        })*/
     $(".One_isDel>div:last-child button").mouseover(function () {
         $(this).css("cursor", "pointer");
     })
@@ -637,8 +605,6 @@
         console.log("计算总价");
         var zzj = 0;
         $(".check").each(function () {
-
-
             if ($(this).prop("checked")) {
                 console.log("check!!" + $(this).parents("ol").find(".zj").html());
                 var zj = $(this).parents("ol").find(".zj").html().substring(1);
@@ -672,16 +638,16 @@
         $(this).css("color", "black")
     })
     //更多促销下拉
-    $(".One_ShopCon ul li>div:nth-child(2) ol li:nth-child(3) p:nth-child(2)").click(function () {
-        $(this).parent().children(".nmbd").slideToggle(300);
-        var dis = $(this).parent().children(".nmbd").css("display");
-        console.log(dis);
-        // if(dis=="block"){
-        // 	$(".hahaha").css("transform","rotateX(-180deg)")
-        // }else{
-        // 	$(".hahaha").css("transform","rotateX(360deg)")
-        // }
-    })
+    // $(".One_ShopCon ul li>div:nth-child(2) ol li:nth-child(3) p:nth-child(2)").click(function () {
+    //     $(this).parent().children(".nmbd").slideToggle(300);
+    //     var dis = $(this).parent().children(".nmbd").css("display");
+    //     console.log(dis);
+    //     if(dis=="block"){
+    //     	$(".hahaha").css("transform","rotateX(-180deg)")
+    //     }else{
+    //     	$(".hahaha").css("transform","rotateX(360deg)")
+    //     }
+    // })
     $(".nmbd dd:last-child button:first-child").click(function () {
         $(this).parent().parent().slideUp(100)
     })
@@ -752,7 +718,6 @@
     $(".itemCheck").click(function () {
        var skuId =  $(this).attr("skuId");
        var check =  $(this).prop("checked");
-       console.log("http://cart.fmall.com/checkItem?skuId="+skuId+"&check="+(check?1:0));
        location.href = "http://cart.fmall.com/checkItem?skuId="+skuId+"&check="+(check?1:0);
     });
     $(".countOps").click(function () {

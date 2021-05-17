@@ -18,7 +18,9 @@ spring:
     cache: false
   session:
     store-type: redis
-
+  jackson:
+    time-zone: GMT+8
+    date-format: yyyy-MM-dd HH:mm:ss
 
 #配置mapper文件的位置
 mybatis-plus:
@@ -27,3 +29,8 @@ mybatis-plus:
     db-config:
       #设置主键自增
       id-type: auto
+
+#设置日志级别
+logging:
+  level:
+    com.suse.fmall: debug

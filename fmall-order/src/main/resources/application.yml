@@ -23,7 +23,8 @@ spring:
   session:
     store-type: redis
   #日期格式化类型
-  mvc:
+  jackson:
+    time-zone: GMT+8
     date-format: yyyy-MM-dd HH:mm:ss
 # 线程池相关配置
 fmall:
@@ -44,3 +45,6 @@ server:
 #支付宝支付相关配置
 alipay:
   app-id: 2016101900720622
+logging:
+  level:
+    com.suse.fmall: debug

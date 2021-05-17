@@ -12,9 +12,6 @@
 		<header>
 			<a href="http://fmall.com"><img src="/static/login/JD_img/logo.jpg" /></a>
 			<p>欢迎登录</p>
-			<div class="top-1">
-				<img src="/static/login/JD_img/4de5019d2404d347897dee637895d02b_06.png" /><span>登录页面,调查问卷</span>
-			</div>
 		</header>
 
 		<div class="top-2">
@@ -27,31 +24,17 @@
 		<!--大图-->
 		<div class="top-3">
 			<div class="img_1">
-				<img src="/static/login/JD_img/5731485aN1134b4f0.png" />
+				<img src="/static/login/JD_img/background_login.png" />
 			</div>
 			<div id="sign">
 				<div class="si_top">
 					<p>
+						<span style="color: red" th:text="${errors != null?(#maps.containsKey(errors,'msg') ? errors.msg : ''):''}"></span>
 						<span style="color: red" th:if="${session.msg != null}">[[${session.msg}]]</span>
 					</p>
 				</div>
 				<div class="si_cen">
-					<h2 class="act btn1">扫码登录</h2>
-					<span>|</span>
-					<h2 class="btn1">账户登录</h2>
-				</div>
-				<div class="si_bom tab">
-					<img src="/static/login/JD_img/show.png" class="bom_1" />
-					<a href="/static/login/#"><img src="/static/login/JD_img/phone-orange.png" class="bom_2" /></a>
-					<h6>打开<span class="red">手机飞鱼商城</span> 扫描二维码</h6>
-					<p>
-						<img src="/static/login/JD_img/4de5019d2404d347897dee637895d02b_15.png" />
-						<span><a href="/static/login/#">免输入</a></span>
-						<img src="/static/login/JD_img/4de5019d2404d347897dee637895d02b_17.png" />
-						<span><a href="/static/login/#">更快</a></span>
-						<img src="/static/login/JD_img/4de5019d2404d347897dee637895d02b_19.png" />
-						<span><a href="/static/login/#">更安全</a></span>
-					</p>
+					<h2 class="act btn1">账户登录</h2>
 				</div>
 				<div class="si_bom1 tab" style="display: none;">
 					<div class="error">
@@ -59,7 +42,7 @@
 						请输入账户名和密码
 					</div>
 					<form action="/login" method="post">
-						<div style="color: red" th:text="${errors != null?(#maps.containsKey(errors,'msg') ? errors.msg : ''):''}"></div>
+						<!--<div style="color: red" th:text="${errors != null?(#maps.containsKey(errors,'msg') ? errors.msg : ''):''}"></div>-->
 						<ul>
 							<li class="top_1">
 								<img src="/static/login/JD_img/user_03.png" class="err_img1" />
@@ -99,36 +82,33 @@
 				</div>
 			</div>
 		</div>
-
-
 		<!--底部-->
 		<footer>
 			<ul>
-				<li><a href="/static/login/#">关于我们</a></li>
+				<li><a>关于我们</a></li>
 				<li class="little">|</li>
-				<li><a href="/static/login/#">联系我们</a></li>
+				<li><a>联系我们</a></li>
 				<li class="little">|</li>
-				<li><a href="/static/login/#">人才招聘</a></li>
+				<li><a>人才招聘</a></li>
 				<li class="little">|</li>
-				<li><a href="/static/login/#">商家入驻</a></li>
+				<li><a>商家入驻</a></li>
 				<li class="little">|</li>
-				<li><a href="/static/login/#">广告服务</a></li>
+				<li><a>广告服务</a></li>
 				<li class="little">|</li>
-				<li><a href="/static/login/#">手机飞鱼商城</a></li>
+				<li><a>手机飞鱼商城</a></li>
 				<li class="little">|</li>
-				<li><a href="/static/login/#">友情链接</a></li>
+				<li><a>友情链接</a></li>
 				<li class="little">|</li>
-				<li><a href="/static/login/#">销售联盟</a></li>
+				<li><a>销售联盟</a></li>
 				<li class="little">|</li>
-				<li><a href="/static/login/#">飞鱼商城社区</a></li>
+				<li><a>飞鱼商城社区</a></li>
 				<li class="little">|</li>
-				<li><a href="/static/login/#">飞鱼商城公益</a></li>
+				<li><a>飞鱼商城公益</a></li>
 				<li class="little">|</li>
-				<li><a href="/static/login/#">English Site</a></li>
+				<li><a>English Site</a></li>
 			</ul>
-			<span>Copyright &copy; 2004-2017 飞鱼商城gulimall.com 版权所有</span>
+			<span>Copyright &copy; 2020-2021 飞鱼商城fmall.com 版权所有</span>
 		</footer>
-
 	</body>
 	<script type="text/javascript">
 		var alDiv = document.getElementsByClassName('tab');

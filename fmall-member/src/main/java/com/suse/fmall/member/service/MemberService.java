@@ -6,6 +6,7 @@ import com.suse.fmall.member.entity.MemberEntity;
 import com.suse.fmall.member.exception.PhoneExistException;
 import com.suse.fmall.member.exception.UsernameExistException;
 import com.suse.fmall.member.vo.MemberLoginVo;
+import com.suse.fmall.member.vo.MemberQuery;
 import com.suse.fmall.member.vo.MemberRegisterVo;
 import com.suse.fmall.member.vo.SocialUser;
 
@@ -36,5 +37,6 @@ public interface MemberService extends IService<MemberEntity> {
 
     MemberEntity login(SocialUser socialUser);
 
+    PageUtils queryPageByCondition(MemberQuery query);
 }
 

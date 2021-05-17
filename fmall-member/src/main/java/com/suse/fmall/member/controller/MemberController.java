@@ -8,6 +8,7 @@ import com.suse.fmall.member.exception.PhoneExistException;
 import com.suse.fmall.member.exception.UsernameExistException;
 import com.suse.fmall.member.feign.CouponFeignService;
 import com.suse.fmall.member.vo.MemberLoginVo;
+import com.suse.fmall.member.vo.MemberQuery;
 import com.suse.fmall.member.vo.MemberRegisterVo;
 import com.suse.fmall.member.vo.SocialUser;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -98,9 +99,8 @@ public class MemberController {
      */
     @RequestMapping("/list")
     //@RequiresPermissions("member:member:list")
-    public R list(@RequestParam Map<String, Object> params){
-        PageUtils page = memberService.queryPage(params);
-
+    public R list(MemberQuery query){
+        PageUtils page = memberService.queryPageByCondition(query);
         return R.ok().put("page", page);
     }
 
@@ -135,6 +135,14 @@ public class MemberController {
     public R update(@RequestBody MemberEntity member){
 		memberService.updateById(member);
 
+        return R.ok();
+    }
+    /**
+     * 修改状态
+     */
+    @RequestMapping("/update/status")
+    public R updateStatus(@RequestBody MemberEntity member){
+        memberService.updateById(member);
         return R.ok();
     }
 

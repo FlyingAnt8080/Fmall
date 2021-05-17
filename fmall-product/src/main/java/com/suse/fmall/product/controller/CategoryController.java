@@ -17,7 +17,6 @@ import com.suse.common.utils.PageUtils;
 import com.suse.common.utils.R;
 
 
-
 /**
  * 商品三级分类
  *
@@ -35,8 +34,7 @@ public class CategoryController {
      * 查出分类以及子分类，以树形结构封装起来
      */
     @RequestMapping("/list/tree")
-    //@RequiresPermissions("product:category:list")
-    public R list(@RequestParam Map<String, Object> params){
+    public R list(@RequestParam Map<String, Object> params) {
         List<CategoryEntity> entities = categoryService.findWithTree();
         return R.ok().put("data", entities);
     }
@@ -46,9 +44,8 @@ public class CategoryController {
      * 信息
      */
     @RequestMapping("/info/{catId}")
-    //@RequiresPermissions("product:category:info")
-    public R info(@PathVariable("catId") Long catId){
-		CategoryEntity category = categoryService.getById(catId);
+    public R info(@PathVariable("catId") Long catId) {
+        CategoryEntity category = categoryService.getById(catId);
         return R.ok().put("category", category);
     }
 
@@ -56,9 +53,8 @@ public class CategoryController {
      * 保存
      */
     @RequestMapping("/save")
-    //@RequiresPermissions("product:category:save")
-    public R save(@RequestBody CategoryEntity category){
-		categoryService.save(category);
+    public R save(@RequestBody CategoryEntity category) {
+        categoryService.save(category);
         return R.ok();
     }
 
@@ -66,9 +62,8 @@ public class CategoryController {
      * 修改
      */
     @RequestMapping("/update")
-    //@RequiresPermissions("product:category:update")
-    public R update(@RequestBody CategoryEntity category){
-		categoryService.updateCascade(category);
+    public R update(@RequestBody CategoryEntity category) {
+        categoryService.updateCascade(category);
         return R.ok();
     }
 
@@ -76,22 +71,21 @@ public class CategoryController {
      * 修改
      */
     @RequestMapping("/update/sort")
-    //@RequiresPermissions("product:category:update")
-    public R updateSort(@RequestBody CategoryEntity[] category){
+    public R updateSort(@RequestBody CategoryEntity[] category) {
         categoryService.updateBatchById(Arrays.asList(category));
         return R.ok();
     }
 
     /**
      * 删除
+     *
      * @RequestBody 获取请求体，必须发送post请求
      * SpringMVC自动将请求体中的数据转为对应的对象
      */
     @RequestMapping("/delete")
-    //@RequiresPermissions("product:category:delete")
-    public R delete(@RequestBody Long[] catIds){
+    public R delete(@RequestBody Long[] catIds) {
         //检查当前删除的菜单，是否被别的地方引用
-		categoryService.removeMenuByIds(Arrays.asList(catIds));
+        categoryService.removeMenuByIds(Arrays.asList(catIds));
         return R.ok();
     }
 

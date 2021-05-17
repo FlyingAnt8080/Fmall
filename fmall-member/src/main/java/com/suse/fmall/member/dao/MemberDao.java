@@ -1,8 +1,13 @@
 package com.suse.fmall.member.dao;
 
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.suse.fmall.member.entity.MemberEntity;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import com.suse.fmall.member.vo.MemberQuery;
+import com.suse.fmall.member.vo.MemberVo;
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
 
 /**
  * 会员
@@ -13,5 +18,6 @@ import org.apache.ibatis.annotations.Mapper;
  */
 @Mapper
 public interface MemberDao extends BaseMapper<MemberEntity> {
-	
+
+    IPage<MemberVo> getMemberByPage(@Param("page") Page<Object> page, @Param("query") MemberQuery query);
 }

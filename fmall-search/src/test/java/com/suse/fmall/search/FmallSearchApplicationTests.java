@@ -2,6 +2,7 @@ package com.suse.fmall.search;
 
 import com.alibaba.fastjson.JSON;
 import com.suse.fmall.search.config.FmallElasticSearchConfig;
+import com.suse.fmall.search.service.ProductDeleteService;
 import lombok.Data;
 import lombok.ToString;
 import org.elasticsearch.action.index.IndexRequest;
@@ -33,10 +34,22 @@ import java.io.IOException;
 class FmallSearchApplicationTests {
     @Autowired
     private RestHighLevelClient client;
+    @Autowired
+    private ProductDeleteService deleteService;
 
     @Test
     public void contextLoads() {
         System.out.println(client);
+    }
+
+    @Test
+    public void testDelete(){
+        try {
+            boolean b = deleteService.productStatusDown(1L);
+            System.out.println("删除：" + b);
+        } catch (IOException e) {
+            System.out.println("删除错误");
+        }
     }
 
     /**

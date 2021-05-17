@@ -14,6 +14,9 @@ spring:
   #服务器名字
   application:
     name: fmall-coupon
+  jackson:
+    time-zone: GMT+8
+    date-format: yyyy-MM-dd HH:mm:ss
 
 #配置mapper文件的位置
 mybatis-plus:

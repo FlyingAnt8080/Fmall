@@ -47,6 +47,17 @@ public class WareSkuController {
     }
 
     /**
+     * 扣库存
+     * @param orderSn
+     * @return
+     */
+    @PostMapping("/delete/stock")
+    public R deleteStock(@RequestBody String orderSn){
+        wareSkuService.deleteStock(orderSn);
+        return R.ok();
+    }
+
+    /**
      * 列表
      */
     @RequestMapping("/list")
@@ -70,7 +81,6 @@ public class WareSkuController {
      * 保存
      */
     @RequestMapping("/save")
-    //@RequiresPermissions("ware:waresku:save")
     public R save(@RequestBody WareSkuEntity wareSku){
 		wareSkuService.save(wareSku);
 

@@ -21,6 +21,7 @@ import com.suse.fmall.order.service.OrderItemService;
 import com.suse.fmall.order.service.PaymentInfoService;
 import com.suse.fmall.order.to.OrderCreateTo;
 import com.suse.fmall.order.vo.*;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,6 +29,8 @@ import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.data.redis.core.script.DefaultRedisScript;
 import org.springframework.stereotype.Service;
 import java.math.BigDecimal;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
@@ -47,7 +50,7 @@ import org.springframework.util.StringUtils;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
-
+@Slf4j
 @Service("orderService")
 public class OrderServiceImpl extends ServiceImpl<OrderDao, OrderEntity> implements OrderService {
     @Autowired
@@ -72,12 +75,21 @@ public class OrderServiceImpl extends ServiceImpl<OrderDao, OrderEntity> impleme
     private ThreadLocal<OrderSubmitVo> confirmVoThreadLocal = new ThreadLocal<>();
 
     @Override
-    public PageUtils queryPage(Map<String, Object> params) {
+    public PageUtils queryPageByCondition(Map<String, Object> params) {
+        String key = (String) params.get("key");
+        QueryWrapper<OrderEntity> queryWrapper = new QueryWrapper<>();
+        String status = (String) params.get("status");
+        if (!StringUtils.isEmpty(status)){
+            queryWrapper.eq("status",status);
+        }
+        if (!StringUtils.isEmpty(key)){
+            queryWrapper.eq("order_sn",key).or().eq("member_username",key)
+            .or().eq("receiver_phone",key).or().eq("receiver_name",key);
+        }
         IPage<OrderEntity> page = this.page(
                 new Query<OrderEntity>().getPage(params),
-                new QueryWrapper<>()
+                queryWrapper
         );
-
         return new PageUtils(page);
     }
 
@@ -216,7 +228,7 @@ public class OrderServiceImpl extends ServiceImpl<OrderDao, OrderEntity> impleme
             this.updateById(update);
             OrderTo orderTo = new OrderTo();
             BeanUtils.copyProperties(orderEntity,orderTo);
-            //给MQ发送消息
+            //给MQ发送消息,解锁库存
             try{
                 //保证消息一定会发送出去，每个消息做好日志记录(给数据库保存每一个消息的详细信息)
                 //定期扫描数据库将失败的消息再发送一遍
@@ -224,7 +236,6 @@ public class OrderServiceImpl extends ServiceImpl<OrderDao, OrderEntity> impleme
             }catch (Exception e){
                 //将没有发送成功的消息进行重试
             }
-
         }
     }
 
@@ -249,9 +260,14 @@ public class OrderServiceImpl extends ServiceImpl<OrderDao, OrderEntity> impleme
     @Override
     public PageUtils queryPageWithItem(Map<String, Object> params) {
         MemberRespVo memberRespVo = LoginUserInterceptor.loginUserThreadLocal.get();
+        QueryWrapper<OrderEntity> queryWrapper = new QueryWrapper<>();
+        String status = (String) params.get("status");
+        if (status != null && !status.equals("-1")){
+            queryWrapper.eq("status",status);
+        }
         IPage<OrderEntity> page = this.page(
                 new Query<OrderEntity>().getPage(params),
-                new QueryWrapper<OrderEntity>().eq("member_id",memberRespVo.getId()).orderByDesc("id")
+                queryWrapper.eq("member_id",memberRespVo.getId()).orderByDesc("id")
         );
         List<OrderEntity> orders = page.getRecords().stream().map(order -> {
             List<OrderItemEntity> itemEntities = orderItemService.list(new QueryWrapper<OrderItemEntity>().eq("order_sn", order.getOrderSn()));
@@ -263,25 +279,66 @@ public class OrderServiceImpl extends ServiceImpl<OrderDao, OrderEntity> impleme
     }
 
     /**
+     * 查询当前登录用户的所有订单信息
+     * @param status
+     * @return
+     */
+    public List<OrderEntity> queryOrderItems(String status){
+        MemberRespVo memberRespVo = LoginUserInterceptor.loginUserThreadLocal.get();
+        QueryWrapper<OrderEntity> queryWrapper = new QueryWrapper<>();
+        if (status != null && !status.equals("-1")){
+            queryWrapper.eq("status",status);
+        }
+        queryWrapper.eq("member_id",memberRespVo.getId()).orderByDesc("id");
+        List<OrderEntity> orderEntities = this.list(queryWrapper);
+        List<OrderEntity> orders = orderEntities.stream().map(order -> {
+            List<OrderItemEntity> itemEntities = orderItemService.list(new QueryWrapper<OrderItemEntity>().eq("order_sn", order.getOrderSn()));
+            order.setItemEntities(itemEntities);
+            return order;
+        }).collect(Collectors.toList());
+        return orders;
+    }
+
+    /**
      * 处理支付宝支付成功的回调结果
      * @param payVo
      * @return
      */
+    //TODO 分布式事务
+    @Transactional
     @Override
     public String handlePayResult(PayAsyncVo payVo) {
-        //1.保存交易流速
+        log.info("支付宝回调数据：{}",payVo);
+        //1.保存交易流水
         PaymentInfoEntity paymentInfo = new PaymentInfoEntity();
         paymentInfo.setAlipayTradeNo(payVo.getTrade_no());
         paymentInfo.setOrderSn(payVo.getOut_trade_no());
+        paymentInfo.setTotalAmount(new BigDecimal(payVo.getTotal_amount()));
+        paymentInfo.setSubject(payVo.getSubject());
         paymentInfo.setPaymentStatus(payVo.getTrade_status());
-        paymentInfo.setCallbackTime(payVo.getNotify_time());
+        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        try {
+            paymentInfo.setCallbackTime(format.parse(payVo.getNotify_time()));
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
         paymentInfoService.save(paymentInfo);
         //2.修改订单状态信息
         String tradeStatus = payVo.getTrade_status();
         if (tradeStatus != null && (tradeStatus.equals("TRADE_SUCCESS")|| tradeStatus.equals("TRADE_FINISHED"))){
             //支付成功
             String orderSn = payVo.getOut_trade_no();
-            this.baseMapper.updateOrderStatus(orderSn,OrderStatusEnum.PAYED.getCode());
+            //this.baseMapper.updateOrderStatus(orderSn,OrderStatusEnum.PAYED.getCode());
+            OrderEntity orderEntity = new OrderEntity();
+            orderEntity.setPaymentTime(new Date());
+            orderEntity.setStatus(OrderStatusEnum.PAYED.getCode());
+            //修改订单状态
+            this.baseMapper.update(orderEntity,new QueryWrapper<OrderEntity>().eq("order_sn",orderSn));
+            //扣库库存
+            R res = wareFeignService.deleteStock(orderSn);
+            if (res.getCode() != 0){
+                return "fail";
+            }
         }
         return "success";
     }
@@ -319,16 +376,18 @@ public class OrderServiceImpl extends ServiceImpl<OrderDao, OrderEntity> impleme
     private void saveOrder(OrderCreateTo order) {
         OrderEntity orderEntity = order.getOrder();
         List<OrderItemEntity> orderItemEntities = order.getOrderItems();
-        orderEntity.setModifyTime(new Date());
+        orderEntity.setCreateTime(new Date());
         this.save(orderEntity);
         orderItemService.saveBatch(orderItemEntities);
     }
 
     private OrderCreateTo createOrder(){
+        OrderSubmitVo orderSubmitVo = confirmVoThreadLocal.get();
         OrderCreateTo createTo = new OrderCreateTo();
         //1.生成订单号
         String orderSn = IdWorker.getTimeId();
         OrderEntity orderEntity = buildOrder(orderSn);
+        orderEntity.setPayType(orderSubmitVo.getPayType());
         createTo.setOrder(orderEntity);
         //2.获取所有的订单项
         List<OrderItemEntity> orderItemEntities = buildOrderItems(orderSn);
@@ -377,7 +436,7 @@ public class OrderServiceImpl extends ServiceImpl<OrderDao, OrderEntity> impleme
         entity.setOrderSn(orderSn);
         entity.setMemberId(memberRespVo.getId());
         entity.setMemberUsername(memberRespVo.getUsername());
-        //获取收货地址信息
+        //远程调用获取收货地址信息
         OrderSubmitVo submitVo = confirmVoThreadLocal.get();
         R res = wareFeignService.getFare(submitVo.getAddrId());
         FareVo fareVo = res.getData(new TypeReference<FareVo>() {});

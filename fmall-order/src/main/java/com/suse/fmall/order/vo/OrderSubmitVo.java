@@ -16,7 +16,7 @@ public class OrderSubmitVo {
     //收货地址Id
     private Long addrId;
     //支付方式
-    private Integer payType;
+    private Integer payType = 1;
     //无需提交要购买的商品，去购物车在获取一遍
     //优惠、发票..
 

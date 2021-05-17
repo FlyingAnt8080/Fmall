@@ -17,7 +17,7 @@ public class PayAsyncVo {
     private String gmt_create;
     private String charset;
     private String gmt_payment;
-    private Date notify_time;
+    private String notify_time;
     private String subject;
     private String sign;
     private String buyer_id;//支付者的id

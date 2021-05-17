@@ -2,14 +2,13 @@ package com.suse.fmall.member.service.impl;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.suse.common.utils.HttpUtils;
 import com.suse.fmall.member.dao.MemberLevelDao;
 import com.suse.fmall.member.entity.MemberLevelEntity;
 import com.suse.fmall.member.exception.PhoneExistException;
 import com.suse.fmall.member.exception.UsernameExistException;
-import com.suse.fmall.member.vo.MemberLoginVo;
-import com.suse.fmall.member.vo.MemberRegisterVo;
-import com.suse.fmall.member.vo.SocialUser;
+import com.suse.fmall.member.vo.*;
 import org.apache.http.HttpResponse;
 import org.apache.http.util.EntityUtils;
 import org.springframework.beans.BeanUtils;
@@ -155,5 +154,11 @@ public class MemberServiceImpl extends ServiceImpl<MemberDao, MemberEntity> impl
             memberDao.insert(regMember);
             return regMember;
         }
+    }
+
+    @Override
+    public PageUtils queryPageByCondition(MemberQuery query) {
+        IPage<MemberVo> page =  this.baseMapper.getMemberByPage(new Page<>(query.getPage(),query.getLimit()),query);
+        return new PageUtils(page);
     }
 }

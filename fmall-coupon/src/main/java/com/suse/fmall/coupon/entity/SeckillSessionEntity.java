@@ -32,6 +32,7 @@ public class SeckillSessionEntity implements Serializable {
 	/**
 	 * 每日开始时间
 	 */
+
 	private Date startTime;
 	/**
 	 * 每日结束时间

@@ -6,6 +6,7 @@ import com.suse.common.utils.PageUtils;
 import com.suse.fmall.order.entity.OrderEntity;
 import com.suse.fmall.order.vo.*;
 
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ExecutionException;
 
@@ -18,7 +19,7 @@ import java.util.concurrent.ExecutionException;
  */
 public interface OrderService extends IService<OrderEntity> {
 
-    PageUtils queryPage(Map<String, Object> params);
+    PageUtils queryPageByCondition(Map<String, Object> params);
 
     /**
      * 订单确认页返回需要的数据
@@ -54,6 +55,8 @@ public interface OrderService extends IService<OrderEntity> {
     PayVo getOrderPay(String orderSn);
 
     PageUtils queryPageWithItem(Map<String, Object> params);
+
+    List<OrderEntity> queryOrderItems(String status);
 
     /**
      * 支付宝支付成功

@@ -38,6 +38,11 @@ public class FmallExceptionControllerAdvice {
         return R.error(BizCodeEnume.VALID_EXCEPTION.getCode(),BizCodeEnume.VALID_EXCEPTION.getMsg()).put("data",errorMap);
     }
 
+    @ExceptionHandler(value = SpuUpException.class)
+    public R handleSpuUpException(SpuUpException e){
+        log.error(e.getMessage());
+        return R.error(BizCodeEnume.PRODUCT_UP_EXCEPTION.getCode(),BizCodeEnume.PRODUCT_UP_EXCEPTION.getMsg());
+    }
 
     @ExceptionHandler(value = Throwable.class)
     public R handleException(Throwable throwable){

@@ -23,7 +23,7 @@ public class AlipayTemplate {
     private  String alipay_public_key = "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAvb3pYC4VIbttaIcZOOIsXj3WFouuMG+0OyzTa9cdDh42WpogyRnPRLEpmD7TGlGIgSvI3MkU2PrqtmcG/ab5ONYXTDNkXOSmTw4DdEteG2sHvtzb472PJIq+FKGcUcs9mm6EekNKvZEbSyv+tOY0zuvaaGwLouX/l5nirVwrersRXG6uNqgLYS6Zsg98gO6z/DIRaKVB/gxZmeacmXKZIth221hWB3pEmYTeaHd+eteJSlEgZy95parNvyG+n6kJCtfU2AeCHvr9UC7Xx/TXWe8th45W+lv11gxSdi2bcvZBCP9qrWqw2BID+tKIuAB+ihPwxetbAguRT4c3pGRVdQIDAQAB";
     // 服务器[异步通知]页面路径  需http://格式的完整路径，不能加?id=123这类自定义参数，必须外网可以正常访问
     // 支付宝会悄悄的给我们发送一个请求，告诉我们支付成功的信息
-    private  String notify_url = "http://lzwis6v2u2.52http.net/payed/notify";
+    private  String notify_url = "http://k5f2tyryxb.bjhttp.cn/payed/notify";
 
     // 页面跳转同步通知页面路径 需http://格式的完整路径，不能加?id=123这类自定义参数，必须外网可以正常访问
     //同步通知，支付成功，一般跳转到成功页
@@ -41,8 +41,6 @@ public class AlipayTemplate {
     private  String gatewayUrl = "https://openapi.alipaydev.com/gateway.do";
 
     public  String pay(PayVo vo) throws AlipayApiException {
-
-        //AlipayClient alipayClient = new DefaultAlipayClient(AlipayTemplate.gatewayUrl, AlipayTemplate.app_id, AlipayTemplate.merchant_private_key, "json", AlipayTemplate.charset, AlipayTemplate.alipay_public_key, AlipayTemplate.sign_type);
         //1、根据支付宝的配置生成一个支付客户端
         AlipayClient alipayClient = new DefaultAlipayClient(gatewayUrl,
                 app_id, merchant_private_key, "json",

@@ -37,6 +37,13 @@ public interface WareFeignService {
     R orderLockStock(@RequestBody WareSkuLockVo lockVo);
 
     /**
+     * 扣库存
+     * @param orderSn
+     * @return
+     */
+    @PostMapping("/ware/waresku/delete/stock")
+    R deleteStock(@RequestBody String orderSn);
+    /**
      * 根据skuId查询商品是否有库存
      * @param skuIds
      * @return

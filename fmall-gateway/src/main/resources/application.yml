@@ -38,6 +38,13 @@ spring:
           - Path=/api/ware/**
           filters:
           - RewritePath=/api/(?<segment>/?.*),/$\{segment}
+        ##订单服务
+        - id: order_route
+          uri: lb://fmall-order
+          predicates:
+          - Path=/api/order/**
+          filters:
+          - RewritePath=/api/(?<segment>/?.*),/$\{segment}
         ##第三方服务(OOS阿里云对象存储)
         - id: third_party_route
           uri: lb://fmall-third-party
@@ -52,6 +59,7 @@ spring:
           - Path=/api/**
           filters:
           - RewritePath=/api/(?<segment>/?.*), /renren-fast/$\{segment}
+        #前台页面路由
         ## Host路由（注：该路由应该放在所有路由之后）
         - id: fmall_host_route
           uri: lb://fmall-product

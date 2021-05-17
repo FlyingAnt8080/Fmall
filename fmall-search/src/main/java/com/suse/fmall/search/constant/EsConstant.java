@@ -11,7 +11,7 @@ package com.suse.fmall.search.constant;
  */
 public class EsConstant {
     public static final String PRODUCT_INDEX = "fmall_product";//sku数据在es中的索引
-    public static final Integer PRODUCT_PAGESIZE = 4;//分页大小
+    public static final Integer PRODUCT_PAGESIZE = 6;//分页大小
 
 
 }

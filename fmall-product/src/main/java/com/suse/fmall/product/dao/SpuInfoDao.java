@@ -1,7 +1,11 @@
 package com.suse.fmall.product.dao;
 
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.suse.fmall.product.entity.SpuInfoEntity;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import com.suse.fmall.product.vo.SpuInfoQuery;
+import com.suse.fmall.product.vo.SpuInfoVo;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
@@ -17,4 +21,5 @@ public interface SpuInfoDao extends BaseMapper<SpuInfoEntity> {
 
     void updateSpuStatus(@Param("spuId") Long spuId, @Param("code") int code);
 
+    IPage<SpuInfoVo> getSpuInfoByPage(Page<SpuInfoVo> page, @Param("query") SpuInfoQuery query);
 }

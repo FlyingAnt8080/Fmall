@@ -1,26 +1,29 @@
 package com.suse.fmall.product.service.impl;
 
 import com.alibaba.fastjson.TypeReference;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.suse.common.constant.ProductConstant;
+import com.suse.common.exception.BizCodeEnume;
 import com.suse.common.to.SkuHasStockVo;
 import com.suse.common.to.SkuReductionTo;
 import com.suse.common.to.SpuBoundsTo;
 import com.suse.common.to.es.SkuEsModel;
 import com.suse.common.utils.R;
 import com.suse.fmall.product.entity.*;
+import com.suse.fmall.product.exception.SpuDownException;
+import com.suse.fmall.product.exception.SpuUpException;
 import com.suse.fmall.product.feign.CouponFeignService;
-import com.suse.fmall.product.feign.SearchFeginService;
+import com.suse.fmall.product.feign.SearchFeignService;
 import com.suse.fmall.product.feign.WareFeginService;
 import com.suse.fmall.product.service.*;
 import com.suse.fmall.product.vo.*;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
 import java.math.BigDecimal;
 import java.util.*;
 import java.util.stream.Collectors;
-
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
@@ -32,7 +35,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 
-
+@Slf4j
 @Service("spuInfoService")
 public class SpuInfoServiceImpl extends ServiceImpl<SpuInfoDao, SpuInfoEntity> implements SpuInfoService {
     @Autowired
@@ -63,7 +66,7 @@ public class SpuInfoServiceImpl extends ServiceImpl<SpuInfoDao, SpuInfoEntity> i
     private WareFeginService wareFeginService;
 
     @Autowired
-    private SearchFeginService searchFeginService;
+    private SearchFeignService searchFeginService;
 
     @Autowired
     private BrandService brandService;
@@ -75,9 +78,8 @@ public class SpuInfoServiceImpl extends ServiceImpl<SpuInfoDao, SpuInfoEntity> i
     public PageUtils queryPage(Map<String, Object> params) {
         IPage<SpuInfoEntity> page = this.page(
                 new Query<SpuInfoEntity>().getPage(params),
-                new QueryWrapper<SpuInfoEntity>()
+                new QueryWrapper<>()
         );
-
         return new PageUtils(page);
     }
 
@@ -198,30 +200,13 @@ public class SpuInfoServiceImpl extends ServiceImpl<SpuInfoDao, SpuInfoEntity> i
     }
 
     @Override
-    public PageUtils queryPageByCondition(Map<String, Object> params) {
-        QueryWrapper<SpuInfoEntity> wrapper = new QueryWrapper<>();
-        String key = (String) params.get("key");
-        if (!StringUtils.isEmpty(key)){
-            wrapper.and(w-> w.eq("id",key).or().like("spu_name",key));
-        }
-        String status = (String) params.get("status");
-        if (!StringUtils.isEmpty(status)){
-            wrapper.eq("publish_status",status);
-        }
-        String brandId = (String) params.get("brandId");
-        if (!StringUtils.isEmpty(brandId)){
-            wrapper.eq("brand_id",brandId);
-        }
-        String catelogId = (String) params.get("catelogId");
-        if (!StringUtils.isEmpty(catelogId)){
-            wrapper.eq("catalog_id",catelogId);
-        }
-        IPage<SpuInfoEntity> page = this.page(new Query<SpuInfoEntity>().getPage(params),wrapper);
+    public PageUtils queryPageByCondition(SpuInfoQuery query) {
+        IPage<SpuInfoVo> page = this.baseMapper.getSpuInfoByPage(new Page<>(query.getPage(), query.getLimit()), query);
         return new PageUtils(page);
     }
 
     @Override
-    public void supUp(Long spuId) {
+    public void spuUp(Long spuId) throws SpuUpException {
         //1.查出当前spuId对应的所有sku信息，品牌的名字
         List<SkuInfoEntity> skus = skuInfoService.getSkusBySpuId(spuId);
         // TODO 4.查出当前spu所有可以被用来检索的规格属性
@@ -282,43 +267,15 @@ public class SpuInfoServiceImpl extends ServiceImpl<SpuInfoDao, SpuInfoEntity> i
             esModel.setAttrs(attrsList);
             return esModel;
         }).collect(Collectors.toList());
-        //TODO 5.将数据发送给ES进行保存：fmall-search
+        // 5.将数据发送给ES进行保存：fmall-search
         R res = searchFeginService.productStatusUp(upProducts);
         if (res.getCode() == 0){
             //远程调用成功
-            // TODO 6.修改当前spu状态
+            //6.修改当前spu状态
             baseMapper.updateSpuStatus(spuId, ProductConstant.SpuStatusEnum.SPU_UP.getCode());
         }else {
-            //远程调用失败
-            //TODO 7.重复调用？接口幂等性：重试机制？
-            /**
-             *Feign的调用流程
-             * 1.构造请求数据，将对象转成JSON
-             *      RequestTemplate template = this.buildTemplateFromArgs.create(argv);
-             * 2.发送请求进行执行(执行成功解码响应数据)
-             *      this.executeAndDecode(template, options)
-             * 3.执行请求会有重试机制(默认关闭)
-             *      while(true) {
-             *             try {
-             *                 return this.executeAndDecode(template, options);
-             *             } catch (RetryableException var9) {
-             *                 RetryableException e = var9;
-             *                 try {
-             *                     retryer.continueOrPropagate(e);
-             *                 } catch (RetryableException var8) {
-             *                     Throwable cause = var8.getCause();
-             *                     if (this.propagationPolicy == ExceptionPropagationPolicy.UNWRAP && cause != null) {
-             *                         throw cause;
-             *                     }
-             *
-             *                     throw var8;
-             *                 }
-             *                 if (this.logLevel != Level.NONE) {
-             *                     this.logger.logRetry(this.metadata.configKey(), this.logLevel);
-             *                 }
-             *             }
-             *         }
-             */
+            //商品上架失败
+            throw new SpuUpException(BizCodeEnume.PRODUCT_UP_EXCEPTION.getMsg());
         }
     }
 
@@ -328,5 +285,20 @@ public class SpuInfoServiceImpl extends ServiceImpl<SpuInfoDao, SpuInfoEntity> i
         Long spuId = skuInfoEntity.getSpuId();
         SpuInfoEntity spuInfoEntity = getById(spuId);
         return spuInfoEntity;
+    }
+
+    /**
+     * 商品下架
+     * @param spuId
+     */
+    @Override
+    public void spuDown(Long spuId) throws SpuDownException {
+        R res = searchFeginService.productStatusDown(spuId);
+        if (res.getCode() == 0){
+             //修改状态
+             baseMapper.updateSpuStatus(spuId,ProductConstant.SpuStatusEnum.SPU_DOWN.getCode());
+        }else {
+            throw new SpuDownException(BizCodeEnume.PRODUCT_DOWN_EXCEPTION.getMsg());
+        }
     }
 }

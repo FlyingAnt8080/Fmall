@@ -80,8 +80,8 @@ public class WareSkuServiceImpl extends ServiceImpl<WareSkuDao, WareSkuEntity> i
         }
 
         String wareId = (String) params.get("wareId");
-        if (!StringUtils.isEmpty(skuId)) {
-            queryWrapper.eq("ware_id", wareId);
+        if (!StringUtils.isEmpty(wareId)) {
+            queryWrapper.eq("ware_id",wareId);
         }
 
         IPage<WareSkuEntity> page = this.page(
@@ -260,6 +260,36 @@ public class WareSkuServiceImpl extends ServiceImpl<WareSkuDao, WareSkuEntity> i
         for (WareOrderTaskDetailEntity entity : entities) {
             unLockedStock(entity.getSkuId(),entity.getWareId(),entity.getSkuNum(),entity.getId());
         }
+    }
+
+    /**
+     * 扣库存
+     * @param orderSn
+     */
+    @Transactional
+    @Override
+    public void deleteStock(String orderSn) {
+        WareOrderTaskEntity orderTask = wareOrderTaskService.getOrderTaskByOrderSn(orderSn);
+        List<WareOrderTaskDetailEntity> orderTaskDetail = orderTaskDetailService.list(new QueryWrapper<WareOrderTaskDetailEntity>().eq("task_id", orderTask.getId()));
+        for (WareOrderTaskDetailEntity entity : orderTaskDetail) {
+            deleteStock(entity.getSkuId(),entity.getWareId(),entity.getSkuNum(),entity.getId());
+        }
+    }
+
+    /**
+     * 解锁库存并扣库存
+     * @param skuId
+     * @param wareId
+     * @param num
+     * @param taskDetailId
+     */
+    private void deleteStock(Long skuId, Long wareId, Integer num, Long taskDetailId) {
+        wareSkuDao.unlockAndDelStock(skuId, wareId, num);
+        //更新库存工单的状态
+        WareOrderTaskDetailEntity entity = new WareOrderTaskDetailEntity();
+        entity.setId(taskDetailId);
+        entity.setLockStatus(3);//变已扣减库存
+        orderTaskDetailService.updateById(entity);
     }
 
     @Data

@@ -22,8 +22,5 @@
         <module>fmall-search</module>
         <module>fmall-gateway</module>
         <module>fmall-third-party</module>
-        <!--<module>fmall-test-sso-client1</module>
-        <module>fmall-test-sso-client2</module>
-        <module>fmall-test-sso-server</module>-->
     </modules>
 </project>

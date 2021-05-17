@@ -2,9 +2,10 @@ package com.suse.fmall.product.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.suse.common.utils.PageUtils;
-import com.suse.fmall.product.entity.SkuInfoEntity;
-import com.suse.fmall.product.entity.SpuInfoDescEntity;
 import com.suse.fmall.product.entity.SpuInfoEntity;
+import com.suse.fmall.product.exception.SpuDownException;
+import com.suse.fmall.product.exception.SpuUpException;
+import com.suse.fmall.product.vo.SpuInfoQuery;
 import com.suse.fmall.product.vo.SpuSaveVo;
 
 import java.util.Map;
@@ -24,13 +25,13 @@ public interface SpuInfoService extends IService<SpuInfoEntity> {
 
     void saveBaseSpuInfo(SpuInfoEntity spuInfoEntity);
 
-    PageUtils queryPageByCondition(Map<String, Object> params);
+    PageUtils queryPageByCondition(SpuInfoQuery query);
 
     /**
      * 商品上架
      * @param spuId
      */
-    void supUp(Long spuId);
+    void spuUp(Long spuId) throws SpuUpException;
 
     /**
      *
@@ -38,5 +39,11 @@ public interface SpuInfoService extends IService<SpuInfoEntity> {
      * @return
      */
     SpuInfoEntity getSpuInfoBySkuId(Long skuId);
+
+    /**
+     * 商品下架
+     * @param spuId
+     */
+    void spuDown(Long spuId) throws SpuDownException;
 }
 

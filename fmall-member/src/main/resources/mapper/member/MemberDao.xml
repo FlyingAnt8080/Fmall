@@ -24,6 +24,16 @@
         <result property="status" column="status"/>
         <result property="createTime" column="create_time"/>
     </resultMap>
-
-
+    <select id="getMemberByPage" resultType="com.suse.fmall.member.vo.MemberVo">
+        SELECT m.`id`,ml.`name` levelName,m.`username`,m.`nickname`,m.`mobile`,m.`email`,m.`header`,
+        m.`gender`,m.`birth`,m.`city`,m.`job`,m.`sign`,m.`source_type`,m.`integration`,m.`growth`,
+        m.`status`,m.`create_time`FROM `ums_member` m LEFT JOIN `ums_member_level` ml ON m.`level_id` = ml.`id`
+        <where>
+            <if test="query.key != null and !(query.key).equals('')">
+                m.id = #{query.key} or m.username like CONCAT('%',#{query.key},'%')
+                or m.nickname like CONCAT('%',#{query.key},'%')
+                or m.mobile = #{query.key}
+            </if>
+        </where>
+    </select>
 </mapper>

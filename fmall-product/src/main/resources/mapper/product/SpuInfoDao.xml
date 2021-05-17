@@ -4,12 +4,14 @@
 <mapper namespace="com.suse.fmall.product.dao.SpuInfoDao">
 
 	<!-- 可根据自己的需求，是否要使用 -->
-    <resultMap type="com.suse.fmall.product.entity.SpuInfoEntity" id="spuInfoMap">
+    <resultMap type="com.suse.fmall.product.vo.SpuInfoVo" id="spuInfoMap">
         <result property="id" column="id"/>
         <result property="spuName" column="spu_name"/>
         <result property="spuDescription" column="spu_description"/>
         <result property="catalogId" column="catalog_id"/>
+        <result property="catalogName" column="catalog_name"/>
         <result property="brandId" column="brand_id"/>
+        <result property="brandName" column="brand_name"/>
         <result property="weight" column="weight"/>
         <result property="publishStatus" column="publish_status"/>
         <result property="createTime" column="create_time"/>
@@ -19,5 +21,23 @@
         UPDATE `pms_spu_info` SET publish_status = #{code},update_time=NOW() WHERE id = #{spuId}
     </update>
 
-
+    <select id="getSpuInfoByPage" resultMap="spuInfoMap">
+        SELECT spu.id,spu.`spu_name`,spu.`weight`,spu.`publish_status`,spu.`brand_id`,spu.`catalog_id`,spu.`create_time`,spu.`update_time`,spu.`spu_description`,spu.`spu_description`,brand.name brand_name,cat.name catalog_name FROM `pms_spu_info` spu
+        LEFT JOIN `pms_brand` brand ON spu.`brand_id` = brand.brand_id
+        LEFT JOIN `pms_category` cat ON spu.`catalog_id` = cat.`cat_id`
+        <where>
+            <if test="query.key != null and !(query.key).equals('')">
+                and  spu.id = #{query.key} or spu.spu_name like CONCAT('%',#{query.key},'%')
+            </if>
+            <if test="query.status != null">
+                and spu.publish_status = #{query.status}
+            </if>
+            <if test="query.brandId != null">
+                and spu.brand_id = #{query.brandId}
+            </if>
+            <if test="query.catelogId != null">
+                and spu.catalog_id = #{query.catelogId}
+            </if>
+        </where>
+    </select>
 </mapper>

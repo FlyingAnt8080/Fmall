@@ -257,7 +257,9 @@ public class MallSearchServiceImpl implements MallSearchService {
             boolQuery.filter(QueryBuilders.termsQuery("brandId",param.getBrandId()));
         }
         //1.2.3 按照库存查询
-        boolQuery.filter(QueryBuilders.termQuery("hasStock",param.getHasStock() == 1));
+        if(param.getHasStock() == 1){
+            boolQuery.filter(QueryBuilders.termQuery("hasStock",true));
+        }
         //1.2.4 按照价格区间
         //skuPrice=1_500/_500/500_
         if (!StringUtils.isEmpty(param.getSkuPrice())){

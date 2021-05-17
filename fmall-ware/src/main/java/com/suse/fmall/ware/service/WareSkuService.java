@@ -36,5 +36,8 @@ public interface WareSkuService extends IService<WareSkuEntity> {
     void unlockStock(StockLockedTo lockedTo);
 
     void unlockStock(OrderTo orderTo);
+
+    void deleteStock(String orderSn);
+
 }
 

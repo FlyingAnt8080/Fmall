@@ -3,7 +3,13 @@ package com.suse.fmall.product.controller;
 import java.util.Arrays;
 import java.util.Map;
 
+import com.suse.common.exception.BizCodeEnume;
 import com.suse.fmall.product.entity.SkuInfoEntity;
+import com.suse.fmall.product.exception.SpuDownException;
+import com.suse.fmall.product.exception.SpuUpException;
+import com.suse.fmall.product.feign.SearchFeignService;
+import com.suse.fmall.product.vo.SpuInfoQuery;
+import com.suse.fmall.product.vo.SpuInfoVo;
 import com.suse.fmall.product.vo.SpuSaveVo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -28,14 +34,26 @@ public class SpuInfoController {
     @Autowired
     private SpuInfoService spuInfoService;
 
+
     /**
      * 商品上架接口
      * @param spuId
      * @return
      */
     @PostMapping("/{spuId}/up")
-    public R spuUp(@PathVariable("spuId") Long spuId){
-        spuInfoService.supUp(spuId);
+    public R spuUp(@PathVariable("spuId") Long spuId) throws SpuUpException {
+        spuInfoService.spuUp(spuId);
+        return R.ok();
+    }
+
+    /**
+     * 商品下架接口
+     * @param spuId
+     * @return
+     */
+    @PostMapping("/{spuId}/down")
+    public R spuDown(@PathVariable("spuId") Long spuId) throws SpuDownException {
+        spuInfoService.spuDown(spuId);
         return R.ok();
     }
 
@@ -54,9 +72,8 @@ public class SpuInfoController {
      * 多条件查询
      */
     @RequestMapping("/list")
-    //@RequiresPermissions("product:spuinfo:list")
-    public R list(@RequestParam Map<String, Object> params){
-        PageUtils page = spuInfoService.queryPageByCondition(params);
+    public R list(SpuInfoQuery query){
+        PageUtils page = spuInfoService.queryPageByCondition(query);
         return R.ok().put("page", page);
     }
 

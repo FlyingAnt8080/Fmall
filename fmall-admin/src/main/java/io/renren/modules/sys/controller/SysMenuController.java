@@ -59,7 +59,6 @@ public class SysMenuController extends AbstractController {
 				sysMenuEntity.setParentName(parentMenuEntity.getName());
 			}
 		}
-
 		return menuList;
 	}
 	

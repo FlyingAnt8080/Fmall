@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.HashMap;
@@ -23,13 +24,14 @@ public class MemberWebController {
     private OrderFeignService orderFeignService;
 
     @GetMapping("/memberOrder.html")
-    public String memberOrderPage(@RequestParam(value = "pageNum",defaultValue = "1") Integer pageNum, Model model){
+    public String memberOrderPage(@RequestParam(value = "status",required = false) String status, Model model){
         //查出当前登录用户的所有订单列表数据
-        Map<String,Object> page = new HashMap<>();
-        page.put("page",pageNum.toString());
-        R res = orderFeignService.listWithItems(page);
-        System.out.println(JSON.toJSONString(res));
+        //R res = orderFeignService.listWithItems(params);
+        R res = orderFeignService.listOrderItems(status);
         model.addAttribute("orders",res);
+        if (status != null && !status.equals("-1")){
+            model.addAttribute("status",Integer.parseInt(status));
+        }
         return "orderList";
     }
 }
