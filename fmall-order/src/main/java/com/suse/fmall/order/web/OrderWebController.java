@@ -41,7 +41,7 @@ public class OrderWebController {
     }
 
     @PostMapping("/submitOrder")
-    public String submitOrder(OrderSubmitVo orderSubmitVo, Model model, RedirectAttributes redirectAttributest){
+    public String submitOrder(OrderSubmitVo orderSubmitVo, Model model, RedirectAttributes redirectAttributes){
         //创订单、验令牌、验价格、锁库存
         SubmitOrderResponseVo responseVo = orderService.submitOrder(orderSubmitVo);
         if (responseVo.getCode() == 0){
@@ -57,11 +57,8 @@ public class OrderWebController {
                 case 2:
                     msg += "订单商品价格发送变化，请确认后再次提交";
                     break;
-                case 3:
-                    msg += "商品库存不足";
-                    break;
             }
-            redirectAttributest.addFlashAttribute("msg",msg);
+            redirectAttributes.addFlashAttribute("msg",msg);
             return "redirect:http://order.fmall.com/toTrade";
         }
     }

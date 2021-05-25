@@ -138,6 +138,17 @@ public class LoginController {
         }
     }
 
+    /**
+     * 退出登录
+     * @param session
+     * @return
+     */
+    @GetMapping("/logout")
+    public String logout(HttpSession session){
+        session.invalidate();
+        return "redirect:http://fmall.com";
+    }
+
     @GetMapping("/login.html")
     public String loginPage(HttpSession session){
         Object user = session.getAttribute(AuthServerConstant.LOGIN_USER);

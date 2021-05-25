@@ -1,6 +1,7 @@
 package com.suse.fmall.product.exception;
 
 import com.suse.common.exception.BizCodeEnume;
+import com.suse.common.exception.NoStockException;
 import com.suse.common.utils.R;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.validation.BindingResult;

@@ -38,14 +38,13 @@
     <!--收货人信息-->
     <div class="top-2">
         <span>收货人信息</span>
-        <span>新增收货地址</span>
+        <span><a href="http://member.fmall.com/receiveAddress.html">新增收货地址</a></span>
     </div>
     <!--confirmData-->
     <!--地址-->
     <div class="top-3 addr-item" th:each=" addr : ${confirmData.address}">
         <p th:attr="def=${addr.defaultStatus},addrId=${addr.id}">[[${addr.name}]]</p><span>[[${addr.name}]]  [[${addr.province}]] [[${addr.city}]] [[${addr.region}]] [[${addr.detailAddress}]]  [[${phone}]]</span>
     </div>
-    <p class="p2">更多地址︾</p>
     <div class="hh1"></div>
     <!--支付方式-->
     <h4 class="h4">支付方式</h4>
@@ -66,10 +65,6 @@
         </div>
         <div class="to_right">
             <h5>商家：飞鱼商城自营</h5>
-            <div>
-                <button>换购</button>
-                <span>已购满20.00元，再加49.90元，可返回购物车领取赠品</span></div>
-            <!--图片-->
             <div class="yun1" th:each=" item : ${confirmData.items}">
                 <img th:src="${item.image}" class="yun"/>
                 <div class="mi">
@@ -102,10 +97,6 @@
             </p>
             <p class="qian_y">
                 <span>服务费： </span>
-                <span class="rmb"> &nbsp ￥0.00</span>
-            </p>
-            <p class="qian_y">
-                <span>退换无忧： </span>
                 <span class="rmb"> &nbsp ￥0.00</span>
             </p>
         </div>
@@ -183,7 +174,7 @@
             $("#payPriceInput").val(payPrice);
             //设置收货地址
             var address = res.data.address;
-            $("#receiveAddressEle").text(address.province + "省 " + address.city + "市 " + address.region + " " + address.detailAddress);
+            $("#receiveAddressEle").text(address.province + address.city+ address.region + " " + address.detailAddress);
             //设置收货人
             $("#receiverEle").text(res.data.address.name);
         });

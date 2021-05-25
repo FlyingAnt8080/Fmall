@@ -13,29 +13,24 @@
         <ul>
           <li><span>[[${session.loginUser == null ? '' : session.loginUser.nickname}]]</span><span>退出</span></li>
           <li><a href="http://member.fmall.com/memberOrder.html">我的订单</a></li>
-          <!--<li>支付帮助</li>-->
         </ul>
       </div>
       <div class="Jdbox_BuySuc">
         <dl>
-          <dt><img src="/static/order/pay/img/saoyisao.png" alt=""></dt>
           <dd>
             <span>订单提交成功，请尽快付款！订单号：[[${submitOrderResp.order.orderSn}]]</span>
-            <span>应付金额<font>[[${#numbers.formatDecimal(submitOrderResp.order.payAmount,1,2)}]]</font>元</span>
+            <span>应付金额<font style="color: red;">[[${#numbers.formatDecimal(submitOrderResp.order.payAmount,1,2)}]]</font>元</span>
           </dd>
           <dd>
-            <span>推荐使用</span>
-            <span>扫码支付请您在<font>24小时</font>内完成支付，否则订单会被自动取消(库存紧订单请参见详情页时限)</span>
+            <span></span>
+            <span>请您在<font>30分钟</font>内完成支付，否则订单会被自动取消(库存紧订单请参见详情页时限)</span>
             <span>订单详细</span>
           </dd>
         </dl>
       </div>
       <div class="Jd_footer">
         <ul>
-          <li>
-            <img src="/static/order/pay/img/weixin.png" alt="">微信支付
-          </li>
-		  <li>
+		  <li style="border: 0px">
             <img src="/static/order/pay/img/zhifubao.png" style="weight:auto;height:30px;" alt="">
             <a th:href="'http://order.fmall.com/payOrder?orderSn='+${submitOrderResp.order.orderSn}">支付宝</a>
           </li>

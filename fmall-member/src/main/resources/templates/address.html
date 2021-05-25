@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>收货地址</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <link type="text/css" rel="stylesheet" href="/static/member/css/ui-base.css"/>
+    <link type="text/css" rel="stylesheet" href="/static/member/css/easebuy.css" source="combo"/>
+    <link type="text/css" rel="stylesheet" href="/static/member/css/common.css" source="widget"/>
+    <link rel="stylesheet" th:href="@{/layuiadmin/layui/css/layui.css}"
+          href="../../static/layuiadmin/layui/css/layui.css"
+          media="all"/>
+    <link rel="stylesheet" th:href="@{/layuiadmin/style/admin.css}" href="../../static/layuiadmin/layui/css/layui.css"
+          media="all"/>
+</head>
+<body myjd="_MYJD_comments" menuId="set">
+<!--shortcut start-->
+<div id="o-header-2013">
+    <div id="header-2013" style="display:none;"></div>
+</div>
+<!--shortcut end-->
+<div id="nav">
+    <div class="w">
+        <div class="navitems">
+            <ul>
+                <li class="fore-1">
+                    <a target="_self" href="http://fmall.com" clstag="homepage|keycount|home2013|Homeindex">首页</a>
+                </li>
+            </ul>
+        </div>
+        <div class="nav-r">
+            <div id="settleup-2014" class="dorpdown">
+                <div class="cw-icon">
+                    <i class="ci-left"></i>
+                    <i class="ci-right">></i>
+                    <a target="_blank" href="http://cart.fmall.com/cart.html">我的购物车</a>
+                </div>
+            </div>
+        </div>
+        <div class="clr"></div>
+    </div>
+</div>
+<div id="container">
+    <div class="w">
+        <div id="content">
+            <input type="hidden" id="whereFrom" value=""/>
+            <div id="sub">
+                <div id="menu">
+                    <dl class="fore1">
+                        <dt id="_MYJD_setting">设置</dt>
+                        <dd class="fore1_1" id="_MYJD_info">
+                            <a clstag="homepage|keycount|home2013|Homeyser" href="#" target="_self">个人信息</a>
+                        </dd>
+                        <dd class="fore1_2" id="_MYJD_safe">
+                            <a clstag="homepage|keycount|home2013|Homesafe" href="#" target="_self">账户安全</a>
+                        </dd>
+                        <dd class="fore1_5" id="_MYJD_comments">
+                            <a clstag="homepage|keycount|home2013|homeadd" href="#" target="_self">收货地址</a>
+                        </dd>
+                    </dl>
+                </div>
+            </div>
+            <div id="main">
+                <div id="addressList" class="mod-main mod-comm">
+                    <div class="mt">
+                        <a id="add-dialog"  class="e-btn add-btn btn-5"
+                           href="javascript:;">新增收货地址</a>
+                    </div>
+                    <div class="mc">
+                        <div class="sm easebuy-m " id="addresssDiv-533400793" th:each="address:${data}">
+                            <div class="smt">
+                                <h3>
+                                    [[${address.name+'  '+address.province}]]
+                                    <span class="ftx-04 ml10" th:if="${address.defaultStatus==1}">默认地址</span>
+                                </h3>
+                                <div class="extra">
+                                    <a class="del-btn" th:attr="id = ${address.id}">删除</a>
+                                </div>
+                            </div>
+                            <div class="smc">
+                                <div class="items new-items">
+                                    <div class="item-lcol">
+                                        <div class="item">
+                                            <span class="label">收货人：</span>
+                                            <div class="fl" th:text="${address.name}">
+
+                                            </div>
+                                            <div class="clr"></div>
+                                        </div>
+                                        <div class="item">
+                                            <span class="label">所在地区：</span>
+                                            <div class="fl">
+                                                [[${address.province+address.city+address.region}]]
+                                            </div>
+                                            <div class="clr"></div>
+                                        </div>
+                                        <div class="item">
+                                            <span class="label">地址：</span>
+                                            <div class="fl" th:text="${address.detailAddress}">
+                                            </div>
+                                            <div class="clr"></div>
+                                        </div>
+                                        <div class="item">
+                                            <span class="label">手机：</span>
+                                            <div class="fl" th:text="${address.phone}">
+                                            </div>
+                                            <div class="clr"></div>
+                                        </div>
+                                    </div>
+                                    <div class="item-rcol">
+                                        <div class="extra">
+                                            <a class="ml10 ftx-05 set-default"
+                                               th:if="${address.defaultStatus==0}"
+                                               th:attr="id = ${address.id}" href="">设为默认</a>
+                                            <a class="ml10 ftx-05 edit" th:attr="id = ${address.id}" href="">编辑</a>
+                                        </div>
+                                    </div>
+                                    <div class="clr"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script th:src="@{/layuiadmin/layui/layui.js}" src="../static/layuiadmin/layui/layui.js"></script>
+<script src="/static/member/js/jquery-3.1.1.min.js"></script>
+<script th:src="@{/layuiadmin/modules/city-picker.js}"></script>
+<!--<script src="/static/member/js/jquery-3.1.1.min.js"></script>-->
+<script th:inline="javascript">
+    layui.config({
+        base:'/layuiadmin/modules/'
+    }).extend({
+        common:'common'
+    });
+    layui.use(['table',"common"], function () {
+        var $ = layui.$,
+        common = layui.common;
+        //添加收货地址
+        $("#add-dialog").click(function () {
+            layer.open({
+                type: 2
+                , title: '添加地址'
+                , content: '/add.html'
+                , maxmin: true
+                , area: ['900px', '350px']
+                , btn: ['确定', '取消']
+                , yes: function (index, layero) {
+                    var iframeWindow = window['layui-layer-iframe' + index]
+                        //该id是窗口打开html页面中表单提交按钮的id
+                        , submitID = 'LAY-user-front-submit'
+                        , submit = layero.find('iframe').contents().find('#' + submitID);
+                    //监听提交
+                    iframeWindow.layui.form.on('submit(' + submitID + ')', function (data) {
+                        var field = data.field; //获取提交的字段
+                        var resData = data.field,
+                            province = resData.province,
+                            city = resData.city,
+                            region = resData.region;
+                        var address = common.getCity({
+                            province,
+                            city,
+                            region
+                        });
+                        data.field.province = address.provinceName;
+                        data.field.city=address.cityName;
+                        data.field.region=address.regionName;
+                        console.log("data",field);
+                        //提交 Ajax 成功后，静态更新表格中的数据
+                        $.ajax({
+                            url: "/member/memberreceiveaddress/save",
+                            type: "post",
+                            dataType: "JSON",
+                            contentType: "application/json",
+                            xhrFields: {
+                                withCredentials: true
+                            },
+                            data: JSON.stringify(data.field),
+                            success: function (result) {
+                                if (result.code == 0) {
+                                    layer.close(index); //关闭弹层
+                                    location.href = location.href;
+                                } else {
+                                    layer.alert(result.msg, {
+                                        title: '提交结果'
+                                        , anim: 6
+                                    });
+                                    layer.close(index);
+                                }
+                            }
+                        });
+                    });
+                    submit.trigger('click');
+                }
+            });
+        });
+        //编辑收货地址
+        $(".edit").click(function () {
+            var addressId = $(this).attr("id");
+            layer.open({
+                type: 2
+                , title: '编辑'
+                , content: '/edit.html/'+addressId
+                , maxmin: true
+                , area: ['900px', '350px']
+                , btn: ['确定', '取消']
+                , yes: function (index, layero) {
+                    var iframeWindow = window['layui-layer-iframe' + index]
+                        //该id是窗口打开html页面中表单提交按钮的id
+                        , submitID = 'LAY-user-front-submit'
+                        , submit = layero.find('iframe').contents().find('#' + submitID);
+                    //监听提交
+                    iframeWindow.layui.form.on('submit(' + submitID + ')', function (data) {
+                        var field = data.field; //获取提交的字段
+                        var resData = data.field,
+                            province = resData.province,
+                            city = resData.city,
+                            region = resData.region;
+                        var address = common.getCity({
+                            province,
+                            city,
+                            region
+                        });
+                        data.field.province = address.provinceName;
+                        data.field.city=address.cityName;
+                        data.field.region=address.regionName;
+                        console.log("data",field);
+                        //提交 Ajax 成功后，静态更新表格中的数据
+                        $.ajax({
+                            url: "/member/memberreceiveaddress/update",
+                            type: "post",
+                            dataType: "JSON",
+                            contentType: "application/json",
+                            xhrFields: {
+                                withCredentials: true
+                            },
+                            data: JSON.stringify(data.field),
+                            success: function (result) {
+                                if (result.code == 0) {
+                                    layer.close(index); //关闭弹层
+                                    location.href = location.href;
+                                } else {
+                                    layer.alert(result.msg, {
+                                        title: '提交结果'
+                                        , anim: 6
+                                    });
+                                    layer.close(index);
+                                }
+                            }
+                        });
+                    });
+                    submit.trigger('click');
+                }
+            });
+            return false;
+        });
+        $(".del-btn").click(function () {
+            var id =  $(this).attr("id");
+            //提交 Ajax 成功后，静态更新表格中的数据
+            $.ajax({
+                url: "/member/memberreceiveaddress/delete",
+                type: "post",
+                dataType: "JSON",
+                contentType: "application/json",
+                xhrFields: {
+                    withCredentials: true
+                },
+                data: JSON.stringify([id]),
+                success: function (result) {
+                    if (result.code == 0) {
+                        console.log("成功");
+                        location.href = location.href;
+                    } else {
+                        layer.alert(result.msg, {
+                            title: '提交结果'
+                            , anim: 6
+                        });
+                    }
+                }
+            });
+        });
+        $(".set-default").click(function () {
+            var id =  $(this).attr("id");
+            //提交 Ajax 成功后，静态更新表格中的数据
+            $.ajax({
+                url: "/member/memberreceiveaddress/setDefaultAddr",
+                type: "post",
+                dataType: "JSON",
+                contentType: "application/json",
+                xhrFields: {
+                    withCredentials: true
+                },
+                data: JSON.stringify(id),
+                success: function (result) {
+                    if (result.code == 0) {
+                        location.href = location.href;
+                    } else {
+                        layer.alert(result.msg, {
+                            title: '提交结果'
+                            , anim: 6
+                        });
+                    }
+                }
+            });
+        });
+    });
+
+</script>
+</body>
+</html>

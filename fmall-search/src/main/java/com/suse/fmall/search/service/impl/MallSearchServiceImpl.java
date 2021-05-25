@@ -79,7 +79,7 @@ public class MallSearchServiceImpl implements MallSearchService {
     }
 
     /**
-     * 构建结果数
+     * 构建结果树
      * @param response
      * @return
      */

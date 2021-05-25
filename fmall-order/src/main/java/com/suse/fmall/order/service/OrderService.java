@@ -1,6 +1,7 @@
 package com.suse.fmall.order.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.suse.common.exception.NoStockException;
 import com.suse.common.to.mq.SeckillOrderTo;
 import com.suse.common.utils.PageUtils;
 import com.suse.fmall.order.entity.OrderEntity;
@@ -32,7 +33,7 @@ public interface OrderService extends IService<OrderEntity> {
      * @param orderSubmitVo
      * @return
      */
-    SubmitOrderResponseVo submitOrder(OrderSubmitVo orderSubmitVo);
+    SubmitOrderResponseVo submitOrder(OrderSubmitVo orderSubmitVo) throws NoStockException;
 
     /**
      * 根据订单号查询订单

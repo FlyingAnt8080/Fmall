@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>添加地址</title>
+    <link rel="stylesheet" th:href="@{/layuiadmin/layui/css/layui.css}" href="../../static/layui/css/layui.css"
+          media="all"/>
+    <style>
+        body {
+            margin: 10px;
+        }
+        .layui-form-select dl{
+            max-height: 180px;
+        }
+    </style>
+</head>
+<body  style="height: 211px;overflow: hidden">
+<div class="layui-card">
+    <div class="layui-card-body">
+        <form class="layui-form layui-form-pane" action="" lay-filter="component-form-element">
+            <div class="layui-form-item">
+                <label class="layui-form-label">联动选择框</label>
+                <div class="layui-input-inline">
+                    <select name="province" data-area="四川省" lay-filter="province" lay-verify="required">
+                        <option value="">请选择省</option>
+                    </select>
+                </div>
+                <div class="layui-input-inline">
+                    <select name="city" data-area="成都市" lay-filter="city" lay-verify="required">
+                        <option value="">请选择市</option>
+                    </select>
+                </div>
+                <div class="layui-input-inline">
+                    <select name="region" data-area="双流区" lay-filter="region" lay-verify="required">
+                        <option value="">请选择县/区</option>
+                    </select>
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label">详细地址</label>
+                <div class="layui-input-block">
+                    <input type="text" name="detailAddress" lay-verify="required" autocomplete="off" placeholder="详细地址" class="layui-input">
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <div class="layui-row layui-col-space15">
+                    <div class="layui-col-xs6 layui-col-sm6 layui-col-md4">
+                        <label class="layui-form-label">电话</label>
+                        <div class="layui-input-block">
+                            <input type="text" name="phone" lay-verify="required|phone" placeholder="" autocomplete="off"
+                                   class="layui-input">
+                        </div>
+                    </div>
+                    <div class="layui-col-xs6 layui-col-sm6 layui-col-md4">
+                        <label class="layui-form-label">收货人</label>
+                        <div class="layui-input-block">
+                            <input type="text" name="name" lay-verify="required" placeholder="收货人"
+                                   autocomplete="off" class="layui-input">
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <div class="layui-row layui-col-space15">
+                    <div class="layui-col-xs6 layui-col-sm6 layui-col-md4">
+                        <label class="layui-form-label">邮编</label>
+                        <div class="layui-input-block">
+                            <input type="text" name="postCode" lay-verify="required" placeholder="" autocomplete="off"
+                                   class="layui-input">
+                        </div>
+                    </div>
+                    <div class="layui-col-xs6 layui-col-sm6 layui-col-md4">
+                        <!--<label class="layui-form-label">默认地址</label>
+                        <input type="checkbox" value="1" name="defaultStatus" lay-skin="switch" lay-text="是|否">-->
+                    </div>
+                </div>
+            </div>
+            <div class="layui-form-item layui-hide">
+                <input type="button" lay-submit lay-filter="LAY-user-front-submit" id="LAY-user-front-submit"
+                       value="确认">
+            </div>
+        </form>
+    </div>
+</div>
+</div>
+
+<script src="/static/member/js/jquery-3.1.1.min.js"></script>
+<script th:src="@{/layuiadmin/modules/city-picker.js}"></script>
+<script th:src="@{/layuiadmin/layui/layui.js}"></script>
+<script>
+    layui.config({
+        base:'/layuiadmin/modules/'
+    }).extend({
+        common:'common'
+    });
+    layui.use(['form',"common"], function () {
+        var common = layui.common, form = layui.form;
+        //三级地址联动
+        common.showCity('province', 'city', 'region');
+        //获取from表单提交事件
+        //此处submit中的值是lay-filter
+        form.on('submit(component-form-element)', function (data) {
+
+        });
+    });
+</script>
+
+</body>
+</html>

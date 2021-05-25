@@ -148,7 +148,7 @@ public class OrderServiceImpl extends ServiceImpl<OrderDao, OrderEntity> impleme
 //    @GlobalTransactional AT模式不适合高并发场景
     @Transactional
     @Override
-    public SubmitOrderResponseVo submitOrder(OrderSubmitVo orderSubmitVo) {
+    public SubmitOrderResponseVo submitOrder(OrderSubmitVo orderSubmitVo) throws NoStockException{
         confirmVoThreadLocal.set(orderSubmitVo);
         SubmitOrderResponseVo response  = new SubmitOrderResponseVo();
         response.setCode(0);
@@ -192,23 +192,23 @@ public class OrderServiceImpl extends ServiceImpl<OrderDao, OrderEntity> impleme
                 if(res.getCode() == 0){
                     //锁定成功
                     response.setOrder(order.getOrder());
+
                     //TODO 订单创建成功发送消息给MQ
                     rabbitTemplate.convertAndSend("order-event-exchange","order.create.order",order.getOrder());
                     return response;
                 }else {
                     //锁定失败
                     String msg = (String) res.get("msg");
-                    throw  new NoStockException(msg);
+                    throw new NoStockException(msg);
                 }
             }else{
                 //金额对比失败
                 response.setCode(2);
-                return response;
             }
         }else {
             response.setCode(1);
-            return response;
         }
+        return response;
     }
 
     @Override
@@ -328,7 +328,6 @@ public class OrderServiceImpl extends ServiceImpl<OrderDao, OrderEntity> impleme
         if (tradeStatus != null && (tradeStatus.equals("TRADE_SUCCESS")|| tradeStatus.equals("TRADE_FINISHED"))){
             //支付成功
             String orderSn = payVo.getOut_trade_no();
-            //this.baseMapper.updateOrderStatus(orderSn,OrderStatusEnum.PAYED.getCode());
             OrderEntity orderEntity = new OrderEntity();
             orderEntity.setPaymentTime(new Date());
             orderEntity.setStatus(OrderStatusEnum.PAYED.getCode());

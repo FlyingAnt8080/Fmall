@@ -14,4 +14,5 @@ import lombok.ToString;
 public class SubmitOrderResponseVo {
     private OrderEntity order;
     private Integer code;//错误状态码 0:成功
+    private String msg;
 }

@@ -24,5 +24,8 @@ public interface MemberReceiveAddressService extends IService<MemberReceiveAddre
      * @return
      */
     List<MemberReceiveAddressEntity> getAddresses(Long memberId);
+
+    void setDefaultAddress(Long id,Long userId);
+
 }
 

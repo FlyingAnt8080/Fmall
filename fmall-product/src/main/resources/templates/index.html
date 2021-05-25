@@ -14,10 +14,10 @@
 <body>
 <div class="top_find">
     <div class="top_find_son">
-        <img src="index/img/top_find_logo.png" alt="">
+        <!--<img src="index/img/top_find_logo.png" alt="">-->
         <div class="input_find">
             <input type="text" placeholder="卸妆水"/>
-            <span style="background: url('/static/index/img/img_12.png') 0 -1px;"></span>
+           <!-- <span style="background: url('/static/index/img/img_12.png') 0 -1px;"></span>-->
             <a href="#"><img src="/static/index/img/img_09.png"/></a>
         </div>
     </div>
@@ -53,6 +53,10 @@
                 <li>
                     <a href="http://member.fmall.com/memberOrder.html">我的订单</a>
                 </li>
+                <span th:if="${session.loginUser != null}">|</span>
+                <li>
+                    <a href="http://auth.fmall.com/logout" th:if="${session.loginUser != null}">退出</a>
+                </li>
             </ul>
         </div>
     </div>
@@ -60,7 +64,7 @@
     <div class="header_sous">
         <div class="header_form">
             <input id="searchText" type="text" placeholder=""/>
-            <span style="background: url(index/img/img_12.png) 0 -1px;"></span>
+            <!--<span style="background: url(index/img/img_12.png) 0 -1px;"></span>-->
             <!--<button><i class="glyphicon"></i></button>-->
             <a href="javascript:search();"><img src="/static/index/img/img_09.png"/></a>
         </div>
@@ -117,10 +121,10 @@
                             <a href="#"><img class="" src="/static/index/img/touxiang.png"></a>
                         </div>
                         <div class="user_info_show">
-                            <p class="">Hi, 欢迎来到!</p>
+                            <p>Hi,欢迎回来!</p>
                             <p>
-                                <a href="#" class="">登录</a>
-                                <a href="#" class="">注册</a>
+                                <a th:if="${session.loginUser == null}" href="http://auth.fmall.com/login.html" class="">登录</a>
+                                <a th:if="${session.loginUser == null}" href="http://auth.fmall.com/reg.html" class="">注册</a>
                             </p>
                         </div>
                     </div>
@@ -134,8 +138,8 @@
     </div>
 </header>
 
-<div class="section_second">
-    <!-- 第一层 -->
+<!--<div class="section_second">
+    &lt;!&ndash; 第一层 &ndash;&gt;
     <div class="section_second_header">
         <p class="section_second_header_img"></p>
         <div class="section_second_header_left">
@@ -214,9 +218,7 @@
             </div>
         </ul>
     </div>
-
-
-</div>
+</div>-->
 
 
 </body>
@@ -225,7 +227,7 @@
         var keyword = $("#searchText").val()
         window.location.href = "http://search.fmall.com/list.html?keyword=" + keyword;
     }
-    $.get("http://seckill.fmall.com/currentSeckillSkus",function (res) {
+    /*$.get("http://seckill.fmall.com/currentSeckillSkus",function (res) {
         if (res.data.length > 0){
             res.data.forEach(function (item) {
                 $("<li onclick='to_href("+item.skuId+")'></li>")
@@ -236,7 +238,7 @@
                     .appendTo("#seckillSkuContent");
             });
         }
-    });
+    });*/
     function to_href(skuId) {
         location.href = "http://item.fmall.com/"+skuId+".html";
     }
