@@ -45,5 +45,11 @@ public interface SpuInfoService extends IService<SpuInfoEntity> {
      * @param spuId
      */
     void spuDown(Long spuId) throws SpuDownException;
+
+    /**
+     * 根据SpuId商品
+     * @param id
+     */
+    void removeBySpuId(Long id);
 }
 

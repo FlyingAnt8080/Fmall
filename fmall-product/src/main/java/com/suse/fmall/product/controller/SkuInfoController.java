@@ -2,8 +2,12 @@ package com.suse.fmall.product.controller;
 
 import java.math.BigDecimal;
 import java.util.Arrays;
+import java.util.List;
 import java.util.Map;
+import java.util.Set;
+import java.util.stream.Collectors;
 
+import com.suse.fmall.product.service.SpuInfoService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -27,6 +31,8 @@ public class SkuInfoController {
     @Autowired
     private SkuInfoService skuInfoService;
 
+    @Autowired
+    private SpuInfoService spuInfoService;
     /**
      * 根据skuId查询商品价格
      * @param skuId
@@ -41,7 +47,6 @@ public class SkuInfoController {
      * 列表
      */
     @RequestMapping("/list")
-    //@RequiresPermissions("product:skuinfo:list")
     public R list(@RequestParam Map<String, Object> params){
         PageUtils page = skuInfoService.queryPageByCondition(params);
         return R.ok().put("page", page);
@@ -52,7 +57,6 @@ public class SkuInfoController {
      * 信息
      */
     @RequestMapping("/info/{skuId}")
-    //@RequiresPermissions("product:skuinfo:info")
     public R info(@PathVariable("skuId") Long skuId){
 		SkuInfoEntity skuInfo = skuInfoService.getById(skuId);
         return R.ok().put("skuInfo", skuInfo);
@@ -62,7 +66,6 @@ public class SkuInfoController {
      * 保存
      */
     @RequestMapping("/save")
-    //@RequiresPermissions("product:skuinfo:save")
     public R save(@RequestBody SkuInfoEntity skuInfo){
 		skuInfoService.save(skuInfo);
 
@@ -73,10 +76,8 @@ public class SkuInfoController {
      * 修改
      */
     @RequestMapping("/update")
-    //@RequiresPermissions("product:skuinfo:update")
     public R update(@RequestBody SkuInfoEntity skuInfo){
 		skuInfoService.updateById(skuInfo);
-
         return R.ok();
     }
 
@@ -84,11 +85,18 @@ public class SkuInfoController {
      * 删除
      */
     @RequestMapping("/delete")
-    //@RequiresPermissions("product:skuinfo:delete")
     public R delete(@RequestBody Long[] skuIds){
-		skuInfoService.removeByIds(Arrays.asList(skuIds));
-
+        skuInfoService.removeSkuInfoByIds(skuIds,true);
         return R.ok();
     }
 
+    /**
+     * 查询skuIds中被删除或下架的skuId
+     * @param skuIds
+     * @return
+     */
+    @PostMapping("/delOrDownSkuIds")
+    List<Long> selectDelOrDownSkuIds(@RequestBody List<Long> skuIds){
+       return skuInfoService.selectDelOrDownSkuIds(skuIds);
+    }
 }

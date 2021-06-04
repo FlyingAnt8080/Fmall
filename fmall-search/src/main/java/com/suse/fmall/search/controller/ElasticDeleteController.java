@@ -6,10 +6,7 @@ import com.suse.fmall.search.service.ProductDeleteService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
 
@@ -38,6 +35,22 @@ public class ElasticDeleteController {
             return R.ok();
         }else {
            return R.error(BizCodeEnume.PRODUCT_DOWN_EXCEPTION.getCode(),BizCodeEnume.PRODUCT_DOWN_EXCEPTION.getMsg());
+        }
+    }
+
+    @PostMapping("/product/deleteByIds")
+    public R deleteBySKuIds(@RequestBody Long[] spuIds){
+        boolean flag;
+        try {
+            flag = productDeleteService.deleteBySKuIds(spuIds);
+        } catch (IOException e) {
+            log.error("批量删除异常,{}",e);
+            return R.error(BizCodeEnume.ES_SKU_BULK_DEL_EXCEPTION.getCode(),BizCodeEnume.ES_SKU_BULK_DEL_EXCEPTION.getMsg());
+        }
+        if (flag){
+            return R.ok();
+        }else {
+            return R.error(BizCodeEnume.ES_SKU_BULK_DEL_EXCEPTION.getCode(),BizCodeEnume.ES_SKU_BULK_DEL_EXCEPTION.getMsg());
         }
     }
 }

@@ -19,6 +19,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
 import java.math.BigDecimal;
+import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
@@ -96,10 +97,11 @@ public class CartServiceImpl implements CartService{
     public Cart getCart() throws ExecutionException, InterruptedException {
         Cart cart = new Cart();
         UserInfoTo userInfoTo = CartInterceptor.threadLocal.get();
+        String cartKey = null;
         //判断用户是否登录
         if (userInfoTo.getUserId() != null){
             //登录
-            String cartKey = CartConstant.CART_PREFIX + userInfoTo.getUserId();
+            cartKey = CartConstant.CART_PREFIX + userInfoTo.getUserId();
             //临时购物车的键
             String tempCartKey = CartConstant.CART_PREFIX + userInfoTo.getUserKey();
             //1.判断临时购物车中是否有数据
@@ -117,12 +119,26 @@ public class CartServiceImpl implements CartService{
             cart.setItems(cartItems);
         }else {
             //未登录
-            String cartKey = CartConstant.CART_PREFIX + userInfoTo.getUserKey();
+            cartKey = CartConstant.CART_PREFIX + userInfoTo.getUserKey();
             //获取零时购物车的所有购物项
             List<CartItem> cartItems = getCartItems(cartKey);
             cart.setItems(cartItems);
         }
+        //清空购物车中被删除和被下架的商品
+        List<CartItem> cartItems = clearDelOrDownSkuItem(cart.getItems(),cartKey);
+        cart.setItems(cartItems);
         return cart;
+    }
+
+    //清楚被下架或被删除的商品项
+    private List<CartItem> clearDelOrDownSkuItem(List<CartItem> items,String cartKey) {
+        if (!CollectionUtils.isEmpty(items)){
+            List<Long> skuIds = items.stream().map(CartItem::getSkuId).collect(Collectors.toList());
+            List<Long> discardedSkuIds  = productFeignService.selectDelOrDownSkuIds(skuIds);
+            discardedSkuIds.forEach(id-> deleteItem(id));
+           return getCartItems(cartKey);
+        }
+        return items;
     }
 
     /**
@@ -217,6 +233,18 @@ public class CartServiceImpl implements CartService{
                     })
                     .collect(Collectors.toList());
             return checkedCartItems;
+        }
+    }
+
+    @Override
+    public void clearPurchasedCartItems(List<Long> ids) {
+        UserInfoTo userInfoTo = CartInterceptor.threadLocal.get();
+        if (userInfoTo.getUserId() == null){
+            return;
+        }else {
+           String cartKey = CartConstant.CART_PREFIX + userInfoTo.getUserId();
+           BoundHashOperations<String, Object, Object> hashOps = redisTemplate.boundHashOps(cartKey);
+           ids.forEach((id)-> hashOps.delete(id.toString()));
         }
     }
 }

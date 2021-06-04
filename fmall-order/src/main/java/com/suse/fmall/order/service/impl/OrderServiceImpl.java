@@ -192,8 +192,10 @@ public class OrderServiceImpl extends ServiceImpl<OrderDao, OrderEntity> impleme
                 if(res.getCode() == 0){
                     //锁定成功
                     response.setOrder(order.getOrder());
-
-                    //TODO 订单创建成功发送消息给MQ
+                    //删除购物车中已购买的商品信息
+                    List<Long> skuIds = order.getOrderItems().stream().map(OrderItemEntity::getSkuId).collect(Collectors.toList());
+                    cartFeignService.clearPurchasedCartItems(skuIds);
+                    //订单创建成功发送消息给MQ
                     rabbitTemplate.convertAndSend("order-event-exchange","order.create.order",order.getOrder());
                     return response;
                 }else {
@@ -234,7 +236,7 @@ public class OrderServiceImpl extends ServiceImpl<OrderDao, OrderEntity> impleme
                 //定期扫描数据库将失败的消息再发送一遍
                 rabbitTemplate.convertAndSend("order-event-exchange","order.release.other",orderTo);
             }catch (Exception e){
-                //将没有发送成功的消息进行重试
+
             }
         }
     }
@@ -335,6 +337,8 @@ public class OrderServiceImpl extends ServiceImpl<OrderDao, OrderEntity> impleme
             this.baseMapper.update(orderEntity,new QueryWrapper<OrderEntity>().eq("order_sn",orderSn));
             //扣库库存
             R res = wareFeignService.deleteStock(orderSn);
+            //修改商品销量
+
             if (res.getCode() != 0){
                 return "fail";
             }
@@ -509,4 +513,6 @@ public class OrderServiceImpl extends ServiceImpl<OrderDao, OrderEntity> impleme
         orderItem.setRealAmount(realPrice);
         return orderItem;
     }
+
+
 }

@@ -9,4 +9,6 @@ import java.io.IOException;
  */
 public interface ProductDeleteService {
     boolean productStatusDown(Long spuId) throws IOException;
+
+    boolean deleteBySKuIds(Long[] spuIds) throws IOException;
 }

@@ -62,4 +62,10 @@ public interface CartService {
     void deleteItem(Long skuId);
 
     List<CartItem> getUserCartItems();
+
+    /**
+     * 删除购物车中已购买的商品项
+     * @param ids
+     */
+    void clearPurchasedCartItems(List<Long> ids);
 }

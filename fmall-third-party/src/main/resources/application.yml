@@ -4,7 +4,7 @@ spring:
   cloud:
     #配置阿里云对象存储
     alicloud:
-      access-key: XXXX
+      access-key: XXXXXX
       secret-key: XXXX
       oss:
         endpoint: oss-cn-beijing.aliyuncs.com
@@ -14,8 +14,8 @@ spring:
         host: https://gyytz.market.alicloudapi.com
         path: /sms/smsSend
         templateId: 908e94ccf08b4476ba6c876d13f084ad
-        smsSignId: XXX
-        appcode: XXX
+        smsSignId: XXXXX
+        appcode: XXXX
     nacos:
       discovery:
         server-addr: 127.0.0.1:8848

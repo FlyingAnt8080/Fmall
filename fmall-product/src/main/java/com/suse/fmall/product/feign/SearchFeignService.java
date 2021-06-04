@@ -19,7 +19,19 @@ public interface SearchFeignService {
     @PostMapping("/search/save/product")
     R productStatusUp(@RequestBody List<SkuEsModel> skuEsModels);
 
-
+    /**
+     * 根据spuId删除所有商品
+     * @param spuId
+     * @return
+     */
     @PostMapping("/search/del/product/{spuId}")
     R productStatusDown(@PathVariable("spuId") Long spuId);
+
+    /**
+     * 根据SkuId删除所有商品
+     * @param spuIds
+     * @return
+     */
+    @PostMapping("/search/del/product/deleteByIds")
+    R deleteBySKuIds(@RequestBody Long[] spuIds);
 }

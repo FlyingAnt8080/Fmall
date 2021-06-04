@@ -3,6 +3,7 @@ package com.suse.fmall.product.dao;
 import com.suse.fmall.product.entity.SkuImagesEntity;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
 
 /**
  * sku图片
@@ -13,5 +14,6 @@ import org.apache.ibatis.annotations.Mapper;
  */
 @Mapper
 public interface SkuImagesDao extends BaseMapper<SkuImagesEntity> {
-	
+
+    void deleteBySkuIds(@Param("skuIds") Long[] skuIds);
 }

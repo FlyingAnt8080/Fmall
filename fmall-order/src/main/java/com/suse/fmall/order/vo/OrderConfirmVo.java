@@ -31,10 +31,6 @@ public class OrderConfirmVo {
    @Getter
    @Setter
    private Map<Long,Boolean> stocks;
-   //订单总额
-    //   private BigDecimal total;
-    //应付价格
-    //private BigDecimal payPrice;
 
    //TODO 防重令牌
    @Getter

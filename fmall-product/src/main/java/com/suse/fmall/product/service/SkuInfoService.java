@@ -32,5 +32,15 @@ public interface SkuInfoService extends IService<SkuInfoEntity> {
      * @return
      */
     SkuItemVo getItemBySku(Long skuId) throws ExecutionException, InterruptedException;
+
+    /**
+     * 根据skuId删除sku信息
+     * @param skuIds
+     * @param isDelEs
+     */
+    void removeSkuInfoByIds(Long[] skuIds,boolean isDelEs);
+
+    List<Long> selectDelOrDownSkuIds(List<Long> skuIds);
+
 }
 

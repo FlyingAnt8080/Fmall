@@ -41,4 +41,9 @@ public class SkuSaleAttrValueServiceImpl extends ServiceImpl<SkuSaleAttrValueDao
         return saleAttrValueDao.getSkuSaleAttrValuesStringList(skuId);
     }
 
+    @Override
+    public void removeBySkuIds(Long[] skuIds) {
+        this.baseMapper.deleteBySkuIds(skuIds);
+    }
+
 }

@@ -3,9 +3,7 @@ package com.suse.fmall.cart.feign;
 import com.suse.common.utils.R;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 
 import java.math.BigDecimal;
 import java.util.List;
@@ -28,4 +26,6 @@ public interface ProductFeignService {
     @GetMapping("/product/skusaleattrvalue/stringlist/{skuId}")
     List<String> getSkuSaleAttrValue(@PathVariable("skuId") Long skuId);
 
+    @PostMapping("/product/skuinfo/delOrDownSkuIds")
+    List<Long> selectDelOrDownSkuIds(@RequestBody List<Long> skuIds);
 }

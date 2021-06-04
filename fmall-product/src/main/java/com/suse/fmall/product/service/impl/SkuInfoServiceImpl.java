@@ -4,6 +4,8 @@ import com.alibaba.fastjson.TypeReference;
 import com.suse.common.utils.R;
 import com.suse.fmall.product.entity.SkuImagesEntity;
 import com.suse.fmall.product.entity.SpuInfoDescEntity;
+import com.suse.fmall.product.entity.SpuInfoEntity;
+import com.suse.fmall.product.feign.SearchFeignService;
 import com.suse.fmall.product.feign.SeckillFeignService;
 import com.suse.fmall.product.service.*;
 import com.suse.fmall.product.vo.SeckillInfoVo;
@@ -14,11 +16,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ThreadPoolExecutor;
+import java.util.stream.Collectors;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
@@ -28,6 +33,7 @@ import com.suse.common.utils.Query;
 
 import com.suse.fmall.product.dao.SkuInfoDao;
 import com.suse.fmall.product.entity.SkuInfoEntity;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 
 
@@ -43,6 +49,10 @@ public class SkuInfoServiceImpl extends ServiceImpl<SkuInfoDao, SkuInfoEntity> i
     private SkuSaleAttrValueService skuSaleAttrValueService;
     @Autowired
     private SeckillFeignService seckillFeignService;
+    @Autowired
+    private SearchFeignService searchFeignService;
+    @Autowired
+    private SpuInfoService spuInfoService;
     @Autowired
     private ThreadPoolExecutor threadPoolExecutor;
 
@@ -165,4 +175,39 @@ public class SkuInfoServiceImpl extends ServiceImpl<SkuInfoDao, SkuInfoEntity> i
         return skuItemVo;
     }
 
+    @Transactional
+    @Override
+    public void removeSkuInfoByIds(Long[] skuIds,boolean isDelEs) {
+        //1.删除skuInfo
+        this.removeByIds(Arrays.asList(skuIds));
+        //2.删除对应的skuImages
+        skuImagesService.removeBySkuIds(skuIds);
+        //3.删除对应的销售属性
+        skuSaleAttrValueService.removeBySkuIds(skuIds);
+        //4.删除ES中对应的sku数据
+        if (isDelEs){
+           searchFeignService.deleteBySKuIds(skuIds);
+        }
+    }
+
+    @Override
+    public List<Long> selectDelOrDownSkuIds(List<Long> skuIds) {
+        //查询skuIds中未被删除的skuId对应的skuInfo
+        List<SkuInfoEntity> skuInfoEntities = this.listByIds(skuIds);
+        //得到这些sku对应spu的spuId
+        Set<Long> spuIds = skuInfoEntities.stream().map(SkuInfoEntity::getSpuId).collect(Collectors.toSet());
+        //查询spu信息
+        List<SpuInfoEntity> spuInfoEntities = spuInfoService.listByIds(spuIds);
+        //过滤出已下架的spu信息
+        List<SpuInfoEntity> downEntities = spuInfoEntities.stream().filter(item -> item.getPublishStatus().equals(2)).collect(Collectors.toList());
+        //skuIds中未被删除且未被下架的skuId
+        List<Long> upSkuIds = skuInfoEntities.stream().filter((item) -> {
+            for (SpuInfoEntity downEntity : downEntities) {
+                if (downEntity.getId().equals(item.getSpuId())) return false;
+            }
+            return true;
+        }).map(SkuInfoEntity::getSkuId).collect(Collectors.toList());
+        skuIds.removeAll(upSkuIds);
+        return skuIds;
+    }
 }

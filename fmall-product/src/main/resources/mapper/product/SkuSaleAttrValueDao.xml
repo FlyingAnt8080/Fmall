@@ -20,6 +20,12 @@
             <result column="sku_ids" property="skuIds"></result>
         </collection>
     </resultMap>
+    <delete id="deleteBySkuIds">
+        delete from `pms_sku_sale_attr_value` where sku_id in
+        <foreach collection="skuIds" item="item" open="(" separator="," close=")">
+            #{item}
+        </foreach>
+    </delete>
     <select id="getSaleAttrsBySpuId" resultMap="SkuItemSaleAttrVo">
         SELECT
         ssav.`attr_id` attr_id,

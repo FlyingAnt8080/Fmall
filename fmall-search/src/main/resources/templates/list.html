@@ -47,7 +47,7 @@
         <a href="http://fmall.com"><img src="/static/search/./image/logo1.jpg" alt=""></a>
     </div>
     <div class="header_form">
-        <input id="keyword_input" type="text" placeholder="手机" th:value="${param.keyword}"/>
+        <input id="keyword_input" type="text" th:value="${param.keyword}"/>
         <a href="javascript:searchByKeyword();">搜索</a>
     </div>
     <div class="header_ico">
@@ -394,8 +394,11 @@
     })
 
     function searchProducts(name, value) {
+        //设置到第一页
+        var href = location.href + "";
+        href = repalceAndAddParamVal(href, "pageNum", 1,false);
         //原来的页面
-        location.href = repalceAndAddParamVal(location.href, name, value, true);
+        location.href = repalceAndAddParamVal(href, name, value, false);
     }
 
     function searchByKeyword() {
@@ -451,35 +454,20 @@
         location.href = repalceAndAddParamVal(location.href, "sort", sort);
         return false;
     });
-    //改变综合排序的样式
-    // function changeStyle(ele) {
-    //     $(".sort_a").css({"color":"#333","border-color":"#CCC","background":"#FFF"});
-    //     $(".sort_a").each(function(){
-    //         var text = $(this).text().replace("↓","").replace("↑","");
-    //         $(this).text(text);
-    //     });
-    //     //'color:#FFF;border-color:#e4393c;background:#e4393c;'高亮
-    //     //'color:#333;border-color:#CCC;background:#FFF;'默认
-    //     $(ele).css({"color":"#FFF","border-color":"#e4393c","background":"#e4393c"});
-    //     //感知升降序
-    //     $(ele).toggleClass("desc");//加上就是降序，不加就是升序
-    //     var text = $(ele).text().replace("↓","").replace("↑","");
-    //     text += $(ele).hasClass("desc")? "↓":"↑";
-    //     $(ele).text(text);
-    //     //禁用模式行为
-    //     return false;
-    // }
     $("#skuPriceSearchBtn").click(function () {
         //1.拼上价格区间
         var from = $("#skuPriceFrom").val();
         var to = $("#skuPriceTo").val();
         var query = from + "_" + to;
+        //设置到第一页
+        var href = location.href + "";
+        href = repalceAndAddParamVal(href, "pageNum", 1,false);
         if (query != "_") {
-            location.href = repalceAndAddParamVal(location.href, "skuPrice", query);
+           location.href = repalceAndAddParamVal(href, "skuPrice", query,false);
         } else {
             //设置为空
-            var re = eval('/(skuPrice=)([^&]*)/gi');
-            location.href = (location.href + "").replace(re, '');
+            var re = eval('/(&skuPrice=)([^&]*)/gi');
+           location.href = (href + "").replace(re, '');
         }
     });
     $("#showHashStock").change(function () {
@@ -487,7 +475,7 @@
             location.href = repalceAndAddParamVal(location.href, "hasStock", 1);
         } else {
             //没选中
-            var re = eval('/(hasStock=)([^&]*)/gi');
+            var re = eval('/(&hasStock=)([^&]*)/gi');
             location.href = (location.href + "").replace(re, '');
         }
         return false;

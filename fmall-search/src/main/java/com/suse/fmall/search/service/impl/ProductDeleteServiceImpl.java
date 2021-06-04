@@ -4,6 +4,9 @@ import com.suse.fmall.search.config.FmallElasticSearchConfig;
 import com.suse.fmall.search.constant.EsConstant;
 import com.suse.fmall.search.service.ProductDeleteService;
 import lombok.extern.slf4j.Slf4j;
+import org.elasticsearch.action.bulk.BulkRequest;
+import org.elasticsearch.action.bulk.BulkResponse;
+import org.elasticsearch.action.delete.DeleteRequest;
 import org.elasticsearch.client.RestHighLevelClient;
 import org.elasticsearch.common.unit.TimeValue;
 import org.elasticsearch.index.query.TermQueryBuilder;
@@ -41,7 +44,16 @@ public class ProductDeleteServiceImpl implements ProductDeleteService {
         // 刷新索引
         request.setRefresh(true);
         BulkByScrollResponse response = restHighLevelClient.deleteByQuery(request, FmallElasticSearchConfig.COMMON_OPTIONS);
-        System.out.println("updated："+response.getStatus().getUpdated());
         return response.getBulkFailures().size() > 0 ? false : true;
+    }
+
+    @Override
+    public boolean deleteBySKuIds(Long[] spuIds) throws IOException {
+        BulkRequest bulkRequest = new BulkRequest();
+        for (int i = 0; i < spuIds.length; i++) {
+            bulkRequest.add(new DeleteRequest().index(EsConstant.PRODUCT_INDEX).id(spuIds[i].toString()));
+        }
+        BulkResponse bulk = restHighLevelClient.bulk(bulkRequest, FmallElasticSearchConfig.COMMON_OPTIONS);
+        return !bulk.hasFailures();
     }
 }

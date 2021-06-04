@@ -301,4 +301,23 @@ public class SpuInfoServiceImpl extends ServiceImpl<SpuInfoDao, SpuInfoEntity> i
             throw new SpuDownException(BizCodeEnume.PRODUCT_DOWN_EXCEPTION.getMsg());
         }
     }
+
+    @Transactional
+    @Override
+    public void removeBySpuId(Long id) {
+        //1.删除SpuInfo信息
+        this.removeById(id);
+        //2.删除SpuImage信息
+        spuImagesService.remove(new QueryWrapper<SpuImagesEntity>().eq("spu_id",id));
+        //3.删除SpuDesc描述
+        spuInfoDescService.removeById(id);
+        //4.删除Spu对应的属性
+        productAttrValueService.remove(new QueryWrapper<ProductAttrValueEntity>().eq("spu_id",id));
+        //5.删除Spu下的所有Sku相关信息
+        List<SkuInfoEntity> spuInfos = skuInfoService.list(new QueryWrapper<SkuInfoEntity>().eq("spu_id", id));
+        if (!CollectionUtils.isEmpty(spuInfos)){
+            List<Long> skuIds = spuInfos.stream().map(SkuInfoEntity::getSkuId).collect(Collectors.toList());
+            skuInfoService.removeSkuInfoByIds(skuIds.toArray(new Long[]{}),false);
+        }
+    }
 }
